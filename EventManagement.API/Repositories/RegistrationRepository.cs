@@ -53,4 +53,31 @@ public class RegistrationRepository : IRegistrationRepository
     {
         await _db.SaveChangesAsync();
     }
+
+    public async Task<(IEnumerable<EventRegistration> Items, int TotalCount)> GetAllPagedAsync(
+        int? eventId, int? userId, RegistrationStatus? status, int page, int pageSize)
+    {
+        var query = _db.EventRegistrations
+            .Include(r => r.Event)
+            .Include(r => r.User)
+            .AsQueryable();
+
+        if (eventId.HasValue)
+            query = query.Where(r => r.EventId == eventId.Value);
+
+        if (userId.HasValue)
+            query = query.Where(r => r.UserId == userId.Value);
+
+        if (status.HasValue)
+            query = query.Where(r => r.Status == status.Value);
+
+        var total = await query.CountAsync();
+        var items = await query
+            .OrderByDescending(r => r.RegisteredAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, total);
+    }
 }

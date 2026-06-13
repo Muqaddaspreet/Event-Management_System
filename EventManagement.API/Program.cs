@@ -86,6 +86,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IVenueService, VenueService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 // ────────────────────────────────────────────────────────────────────────
 var app = builder.Build();
