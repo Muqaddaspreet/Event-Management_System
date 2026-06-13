@@ -7,6 +7,7 @@ public class ServiceResult<T>
     public string Error { get; init; } = string.Empty;
     public bool IsConflict { get; init; }
     public bool IsNotFound { get; init; }
+    public bool IsForbidden { get; init; }
 
     public static ServiceResult<T> Ok(T data) =>
         new() { Succeeded = true, Data = data };
@@ -16,6 +17,9 @@ public class ServiceResult<T>
 
     public static ServiceResult<T> NotFound(string error) =>
         new() { Succeeded = false, Error = error, IsNotFound = true };
+
+    public static ServiceResult<T> Forbidden(string error) =>
+        new() { Succeeded = false, Error = error, IsForbidden = true };
 
     public static ServiceResult<T> Failure(string error) =>
         new() { Succeeded = false, Error = error };
