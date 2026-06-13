@@ -8,6 +8,7 @@ public class ServiceResult<T>
     public bool IsConflict { get; init; }
     public bool IsNotFound { get; init; }
     public bool IsForbidden { get; init; }
+    public bool IsUnprocessableEntity { get; init; }
 
     public static ServiceResult<T> Ok(T data) =>
         new() { Succeeded = true, Data = data };
@@ -20,6 +21,9 @@ public class ServiceResult<T>
 
     public static ServiceResult<T> Forbidden(string error) =>
         new() { Succeeded = false, Error = error, IsForbidden = true };
+
+    public static ServiceResult<T> UnprocessableEntity(string error) =>
+        new() { Succeeded = false, Error = error, IsUnprocessableEntity = true };
 
     public static ServiceResult<T> Failure(string error) =>
         new() { Succeeded = false, Error = error };
