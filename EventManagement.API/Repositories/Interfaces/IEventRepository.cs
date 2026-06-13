@@ -19,4 +19,7 @@ public interface IEventRepository
     Task<Event> CreateAsync(Event evt);
 
     Task UpdateAsync(Event evt);
+
+    Task<int> CountTotalAsync();
+    Task<int> CountByStatusAsync(EventStatus status);
 }

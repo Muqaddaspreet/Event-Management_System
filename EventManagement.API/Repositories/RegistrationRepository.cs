@@ -54,6 +54,9 @@ public class RegistrationRepository : IRegistrationRepository
         await _db.SaveChangesAsync();
     }
 
+    public async Task<int> CountTotalAsync()
+        => await _db.EventRegistrations.CountAsync();
+
     public async Task<(IEnumerable<EventRegistration> Items, int TotalCount)> GetAllPagedAsync(
         int? eventId, int? userId, RegistrationStatus? status, int page, int pageSize)
     {

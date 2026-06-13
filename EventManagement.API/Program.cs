@@ -1,12 +1,15 @@
 using System.Text;
 using EventManagement.API.Data;
 using EventManagement.API.Data.Seed;
+using EventManagement.API.DTOs.Common;
+using EventManagement.API.Middleware;
 using EventManagement.API.Repositories;
 using EventManagement.API.Repositories.Interfaces;
 using EventManagement.API.Services;
 using EventManagement.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -14,7 +17,19 @@ using Microsoft.OpenApi;
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Controllers ───────────────────────────────────────────────────────
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToArray();
+            return new BadRequestObjectResult(new ErrorResponse("Validation failed.", errors));
+        };
+    });
 
 // ── OpenAPI / Swagger ─────────────────────────────────────────────────
 // Swashbuckle generates the spec; we keep the URL at /openapi/v1.json
@@ -87,6 +102,7 @@ builder.Services.AddScoped<IVenueService, VenueService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
 
 // ────────────────────────────────────────────────────────────────────────
 var app = builder.Build();
@@ -99,6 +115,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ── HTTP pipeline ─────────────────────────────────────────────────────
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     // Serve Swashbuckle spec at /openapi/v1.json (same URL as before)

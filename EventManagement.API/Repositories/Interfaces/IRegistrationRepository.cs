@@ -13,4 +13,5 @@ public interface IRegistrationRepository
     Task UpdateAsync(EventRegistration registration);
     Task<(IEnumerable<EventRegistration> Items, int TotalCount)> GetAllPagedAsync(
         int? eventId, int? userId, RegistrationStatus? status, int page, int pageSize);
+    Task<int> CountTotalAsync();
 }

@@ -105,4 +105,10 @@ public class EventRepository : IEventRepository
     {
         await _db.SaveChangesAsync();
     }
+
+    public async Task<int> CountTotalAsync()
+        => await _db.Events.CountAsync();
+
+    public async Task<int> CountByStatusAsync(EventStatus status)
+        => await _db.Events.CountAsync(e => e.Status == status);
 }

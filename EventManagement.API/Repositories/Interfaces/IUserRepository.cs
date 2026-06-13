@@ -11,4 +11,5 @@ public interface IUserRepository
     Task<User> CreateAsync(User user);
     Task<(IEnumerable<User> Items, int TotalCount)> GetAllPagedAsync(
         UserRole? role, string? search, int page, int pageSize);
+    Task<int> CountTotalAsync();
 }

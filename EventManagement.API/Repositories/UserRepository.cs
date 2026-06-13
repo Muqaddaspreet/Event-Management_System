@@ -31,6 +31,9 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public async Task<int> CountTotalAsync()
+        => await _db.Users.CountAsync();
+
     public async Task<(IEnumerable<User> Items, int TotalCount)> GetAllPagedAsync(
         UserRole? role, string? search, int page, int pageSize)
     {
