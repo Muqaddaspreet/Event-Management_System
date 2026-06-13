@@ -69,6 +69,31 @@ public class EventRepository : IEventRepository
         return (items, total);
     }
 
+    public async Task<(IEnumerable<Event> Items, int TotalCount)> GetAllPagedAsync(
+        EventStatus? status, int? organizerId, int page, int pageSize)
+    {
+        var query = _db.Events
+            .Include(e => e.Organizer)
+            .Include(e => e.Category)
+            .Include(e => e.Venue)
+            .AsQueryable();
+
+        if (status.HasValue)
+            query = query.Where(e => e.Status == status.Value);
+
+        if (organizerId.HasValue)
+            query = query.Where(e => e.OrganizerId == organizerId.Value);
+
+        var total = await query.CountAsync();
+        var items = await query
+            .OrderByDescending(e => e.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, total);
+    }
+
     public async Task<Event> CreateAsync(Event evt)
     {
         _db.Events.Add(evt);

@@ -76,6 +76,55 @@ public class EventService : IEventService
         };
     }
 
+    public async Task<PagedResult<EventSummaryResponse>> GetAllForAdminAsync(
+        EventStatus? status, int? organizerId, int page, int pageSize)
+    {
+        page     = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize > 50 ? 50 : pageSize;
+
+        var (items, total) = await _eventRepo.GetAllPagedAsync(status, organizerId, page, pageSize);
+
+        return new PagedResult<EventSummaryResponse>
+        {
+            Items      = items.Select(MapToSummary),
+            Page       = page,
+            PageSize   = pageSize,
+            TotalCount = total
+        };
+    }
+
+    public async Task<ServiceResult<EventDetailResponse>> ApproveAsync(int id)
+    {
+        var evt = await _eventRepo.GetByIdWithDetailsAsync(id);
+        if (evt is null)
+            return ServiceResult<EventDetailResponse>.NotFound("Event not found.");
+
+        if (evt.Status != EventStatus.PendingApproval)
+            return ServiceResult<EventDetailResponse>.Conflict(
+                $"Event cannot be approved because its current status is {evt.Status}.");
+
+        evt.Status    = EventStatus.Published;
+        evt.UpdatedAt = DateTime.UtcNow;
+        await _eventRepo.UpdateAsync(evt);
+        return ServiceResult<EventDetailResponse>.Ok(MapToDetail(evt));
+    }
+
+    public async Task<ServiceResult<EventDetailResponse>> RejectAsync(int id, RejectEventRequest request)
+    {
+        var evt = await _eventRepo.GetByIdWithDetailsAsync(id);
+        if (evt is null)
+            return ServiceResult<EventDetailResponse>.NotFound("Event not found.");
+
+        if (evt.Status != EventStatus.PendingApproval)
+            return ServiceResult<EventDetailResponse>.Conflict(
+                $"Event cannot be rejected because its current status is {evt.Status}.");
+
+        evt.Status    = EventStatus.Rejected;
+        evt.UpdatedAt = DateTime.UtcNow;
+        await _eventRepo.UpdateAsync(evt);
+        return ServiceResult<EventDetailResponse>.Ok(MapToDetail(evt));
+    }
+
     public async Task<ServiceResult<EventDetailResponse>> CreateAsync(
         CreateEventRequest request, int organizerId)
     {

@@ -277,4 +277,137 @@ public class EventServiceTests
         Assert.False(result.Succeeded);
         Assert.Contains("could not be loaded", result.Error);
     }
+
+    // ── Admin approval tests ──────────────────────────────────────────────
+    //
+    // Invalid status string ("xyz") is rejected at the controller boundary with 400
+    // via Enum.TryParse before reaching the service. Service-layer tests below cover
+    // all valid EventStatus values and the null (no-filter) case.
+
+    [Fact]
+    public async Task Approve_SetsPendingApprovalToPublished()
+    {
+        Event? saved = null;
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(1))
+            .ReturnsAsync(MakeDetailEvent(1, EventStatus.PendingApproval, organizerId: 5));
+        eventRepo.Setup(r => r.UpdateAsync(It.IsAny<Event>()))
+            .Callback<Event>(e => saved = e)
+            .Returns(Task.CompletedTask);
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.ApproveAsync(1);
+
+        Assert.True(result.Succeeded);
+        Assert.NotNull(saved);
+        Assert.Equal(EventStatus.Published, saved!.Status);
+    }
+
+    [Fact]
+    public async Task Reject_SetsPendingApprovalToRejected()
+    {
+        Event? saved = null;
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(1))
+            .ReturnsAsync(MakeDetailEvent(1, EventStatus.PendingApproval, organizerId: 5));
+        eventRepo.Setup(r => r.UpdateAsync(It.IsAny<Event>()))
+            .Callback<Event>(e => saved = e)
+            .Returns(Task.CompletedTask);
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.RejectAsync(1, new RejectEventRequest { Reason = "Incomplete details." });
+
+        Assert.True(result.Succeeded);
+        Assert.NotNull(saved);
+        Assert.Equal(EventStatus.Rejected, saved!.Status);
+    }
+
+    [Fact]
+    public async Task Approve_NonPendingEventReturnsConflict()
+    {
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(1))
+            .ReturnsAsync(MakeDetailEvent(1, EventStatus.Published, organizerId: 5));
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.ApproveAsync(1);
+
+        Assert.False(result.Succeeded);
+        Assert.True(result.IsConflict);
+        eventRepo.Verify(r => r.UpdateAsync(It.IsAny<Event>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Reject_NonPendingEventReturnsConflict()
+    {
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(1))
+            .ReturnsAsync(MakeDetailEvent(1, EventStatus.Cancelled, organizerId: 5));
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.RejectAsync(1, new RejectEventRequest());
+
+        Assert.False(result.Succeeded);
+        Assert.True(result.IsConflict);
+        eventRepo.Verify(r => r.UpdateAsync(It.IsAny<Event>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Approve_MissingEventReturnsNotFound()
+    {
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(99))
+            .ReturnsAsync((Event?)null);
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.ApproveAsync(99);
+
+        Assert.False(result.Succeeded);
+        Assert.True(result.IsNotFound);
+    }
+
+    [Fact]
+    public async Task Reject_MissingEventReturnsNotFound()
+    {
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetByIdWithDetailsAsync(99))
+            .ReturnsAsync((Event?)null);
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.RejectAsync(99, new RejectEventRequest());
+
+        Assert.False(result.Succeeded);
+        Assert.True(result.IsNotFound);
+    }
+
+    [Fact]
+    public async Task GetAllForAdmin_ReturnsPagedResultFromRepository()
+    {
+        var evt = MakeDetailEvent(1, EventStatus.PendingApproval);
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetAllPagedAsync(null, null, 1, 10))
+            .ReturnsAsync(([evt], 1));
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.GetAllForAdminAsync(null, null, 1, 10);
+
+        Assert.Equal(1, result.TotalCount);
+        Assert.Single(result.Items);
+        Assert.Equal("Test Event", result.Items.First().Title);
+        Assert.Equal(EventStatus.PendingApproval.ToString(), result.Items.First().Status);
+    }
+
+    [Fact]
+    public async Task GetAllForAdmin_StatusFilterPassedToRepository()
+    {
+        var eventRepo = new Mock<IEventRepository>();
+        eventRepo.Setup(r => r.GetAllPagedAsync(EventStatus.PendingApproval, null, 1, 10))
+            .ReturnsAsync(([MakeDetailEvent(1, EventStatus.PendingApproval)], 1));
+
+        var svc = BuildService(eventRepo);
+        var result = await svc.GetAllForAdminAsync(EventStatus.PendingApproval, null, 1, 10);
+
+        Assert.Equal(1, result.TotalCount);
+        eventRepo.Verify(r => r.GetAllPagedAsync(EventStatus.PendingApproval, null, 1, 10), Times.Once);
+    }
 }
