@@ -1,4 +1,194 @@
-<div>
-  <h2>Event Detail</h2>
-  <p>Event detail view — placeholder</p>
+<div class="ed-page">
+
+  <!-- ── Loading skeleton ── -->
+  @if (loading()) {
+    <div class="ed-skeleton-hero"></div>
+    <div class="ed-skeleton-body">
+      <div>
+        <div class="ed-skeleton-block" style="height:32px;width:60%;margin-bottom:16px"></div>
+        <div class="ed-skeleton-block" style="height:18px;width:40%;margin-bottom:10px"></div>
+        <div class="ed-skeleton-block" style="height:18px;width:70%;margin-bottom:10px"></div>
+        <div class="ed-skeleton-block" style="height:18px;width:50%;margin-bottom:32px"></div>
+        <div class="ed-skeleton-block" style="height:180px"></div>
+      </div>
+      <div class="ed-skeleton-block" style="height:360px"></div>
+    </div>
+  }
+
+  <!-- ── Not found ── -->
+  @else if (notFound()) {
+    <div class="ed-container">
+      <div class="ed-state">
+        <div class="ed-state__icon">🔍</div>
+        <h2>Event Not Found</h2>
+        <p>This event doesn't exist or is no longer available.</p>
+        <a routerLink="/events" class="btn btn--primary">Browse Events</a>
+      </div>
+    </div>
+  }
+
+  <!-- ── Server error ── -->
+  @else if (error()) {
+    <div class="ed-container">
+      <div class="ed-state">
+        <div class="ed-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load this event. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Event loaded ── -->
+  @else if (event()) {
+
+    <!-- Back link -->
+    <div class="ed-back-bar">
+      <div class="ed-container">
+        <a routerLink="/events" class="ed-back-link">‹ Back to Events</a>
+      </div>
+    </div>
+
+    <!-- Hero banner -->
+    <div class="ed-hero" [style.background]="gradient">
+      <div class="ed-container">
+        <div class="ed-hero__content">
+          <span class="ed-hero__category">{{ event()!.categoryName }}</span>
+          <h1 class="ed-hero__title">{{ event()!.title }}</h1>
+          <div class="ed-hero__meta">
+            <span>📅 {{ formatDate(event()!.startTime) }}</span>
+            <span>📍 {{ event()!.venueName }}, {{ event()!.venueCity }}</span>
+            <span>👤 By {{ event()!.organizerName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="ed-container">
+      <div class="ed-content-grid">
+
+        <!-- Main content -->
+        <main>
+
+          @if (event()!.description) {
+            <section class="ed-section card">
+              <h2>About This Event</h2>
+              <p class="ed-description">{{ event()!.description }}</p>
+            </section>
+          }
+
+          <section class="ed-section card">
+            <h2>Event Details</h2>
+            <div class="ed-details-grid">
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">📅</span>
+                <div>
+                  <div class="ed-detail-label">Start</div>
+                  <p class="ed-detail-value">{{ formatDateTime(event()!.startTime) }}</p>
+                </div>
+              </div>
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">🏁</span>
+                <div>
+                  <div class="ed-detail-label">End</div>
+                  <p class="ed-detail-value">{{ formatDateTime(event()!.endTime) }}</p>
+                </div>
+              </div>
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">🏛️</span>
+                <div>
+                  <div class="ed-detail-label">Venue</div>
+                  <p class="ed-detail-value">{{ event()!.venueName }}</p>
+                  <div class="ed-detail-sub">{{ event()!.venueAddress }}, {{ event()!.venueCity }}</div>
+                </div>
+              </div>
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">🎟️</span>
+                <div>
+                  <div class="ed-detail-label">Capacity</div>
+                  <p class="ed-detail-value">{{ event()!.capacity }} total seats</p>
+                  <div class="ed-detail-sub">
+                    {{ event()!.registrationCount }} registered · {{ availableSeats }} available
+                  </div>
+                </div>
+              </div>
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">🏷️</span>
+                <div>
+                  <div class="ed-detail-label">Category</div>
+                  <p class="ed-detail-value">{{ event()!.categoryName }}</p>
+                </div>
+              </div>
+
+              <div class="ed-detail-item">
+                <span class="ed-detail-icon">👤</span>
+                <div>
+                  <div class="ed-detail-label">Organizer</div>
+                  <p class="ed-detail-value">{{ event()!.organizerName }}</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </main>
+
+        <!-- Action card -->
+        <aside>
+          <div class="ed-action-card card">
+            <div class="ed-action-card__banner" [style.background]="gradient"></div>
+            <div class="ed-action-card__body">
+              <h3 class="ed-action-card__title">{{ event()!.title }}</h3>
+
+              <div class="ed-action-rows">
+                <div class="ed-action-row">
+                  <span class="ed-action-row__label">📅 Date</span>
+                  <span class="ed-action-row__value">{{ formatDate(event()!.startTime) }}</span>
+                </div>
+                <div class="ed-action-row">
+                  <span class="ed-action-row__label">⏰ Time</span>
+                  <span class="ed-action-row__value">{{ formatTime(event()!.startTime) }}</span>
+                </div>
+                <div class="ed-action-row">
+                  <span class="ed-action-row__label">📍 Location</span>
+                  <span class="ed-action-row__value">{{ event()!.venueCity }}</span>
+                </div>
+                <div class="ed-action-row">
+                  <span class="ed-action-row__label">🎟️ Seats Left</span>
+                  <span class="ed-action-row__value">{{ availableSeats }} of {{ event()!.capacity }}</span>
+                </div>
+              </div>
+
+              <!-- Registration CTA — M3 placeholder, full flow in M4 -->
+              @if (!isLoggedIn()) {
+                <a routerLink="/login" class="btn btn--primary btn--full">
+                  Sign In to Register
+                </a>
+                <p class="ed-action-note">Create a free account to attend this event.</p>
+              } @else if (currentRole() === 'Attendee') {
+                <button class="btn btn--primary btn--full" disabled>
+                  Register for Event
+                </button>
+                <p class="ed-action-note">Registration coming in the next update.</p>
+              } @else {
+                <div class="ed-action-info">
+                  You are viewing as <strong>{{ currentRole() }}</strong>.
+                </div>
+              }
+
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+
+  }
+
 </div>

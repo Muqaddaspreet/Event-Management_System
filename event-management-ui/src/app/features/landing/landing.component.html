@@ -1,0 +1,161 @@
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<section class="lp-hero">
+  <div class="lp-container lp-hero__inner">
+
+    <div class="lp-hero__copy">
+      <div class="lp-hero__badge">🎉 Discover Amazing Events</div>
+      <h1 class="lp-hero__title">
+        Find &amp; Book<br>
+        <span class="lp-hero__gradient-text">Amazing Events</span>
+      </h1>
+      <p class="lp-hero__sub">
+        Conferences, workshops, concerts, and community events — all in one place on EventHub.
+      </p>
+
+      <div class="lp-hero__search-bar">
+        <div class="lp-search-wrap">
+          <span class="lp-search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="text"
+            class="lp-search-input"
+            placeholder="Search events, categories, cities…"
+            [value]="searchQuery()"
+            (input)="searchQuery.set($any($event.target).value)"
+            (keydown.enter)="goSearch()">
+        </div>
+        <button class="btn btn--primary btn--lg" (click)="goSearch()">Search</button>
+      </div>
+
+      <div class="lp-hero__stats">
+        <div class="lp-stat">
+          <span class="lp-stat__num">1.2k+</span>
+          <span class="lp-stat__label">Events</span>
+        </div>
+        <div class="lp-stat__divider" aria-hidden="true"></div>
+        <div class="lp-stat">
+          <span class="lp-stat__num">86k+</span>
+          <span class="lp-stat__label">Attendees</span>
+        </div>
+        <div class="lp-stat__divider" aria-hidden="true"></div>
+        <div class="lp-stat">
+          <span class="lp-stat__num">120+</span>
+          <span class="lp-stat__label">Cities</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-hero__visual" aria-hidden="true">
+      <div class="lp-hero__panel">
+        <div class="lp-hero__panel-inner">
+          <div class="lp-hero__mini-card">
+            <div class="lp-hero__mini-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div>
+            <div class="lp-hero__mini-info">
+              <div class="lp-hero__mini-title">Tech Summit 2024</div>
+              <div class="lp-hero__mini-meta">May 20 · San Francisco</div>
+            </div>
+          </div>
+          <div class="lp-hero__mini-card">
+            <div class="lp-hero__mini-thumb" style="background:linear-gradient(135deg,#f093fb,#f5576c)"></div>
+            <div class="lp-hero__mini-info">
+              <div class="lp-hero__mini-title">Summer Music Festival</div>
+              <div class="lp-hero__mini-meta">Jun 15 · Los Angeles</div>
+            </div>
+          </div>
+          <div class="lp-hero__mini-card">
+            <div class="lp-hero__mini-thumb" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"></div>
+            <div class="lp-hero__mini-info">
+              <div class="lp-hero__mini-title">Design Workshop</div>
+              <div class="lp-hero__mini-meta">Jul 8 · New York</div>
+            </div>
+          </div>
+          <div class="lp-hero__mini-card">
+            <div class="lp-hero__mini-thumb" style="background:linear-gradient(135deg,#f7971e,#ffd200)"></div>
+            <div class="lp-hero__mini-info">
+              <div class="lp-hero__mini-title">Business Conference</div>
+              <div class="lp-hero__mini-meta">Aug 2 · Chicago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Popular Categories ─────────────────────────────────────────────────── -->
+<section class="lp-section">
+  <div class="lp-container">
+    <div class="lp-section__header">
+      <div>
+        <h2 class="lp-section__title">Popular Categories</h2>
+        <p class="lp-section__sub">Browse events by what you love</p>
+      </div>
+      <a routerLink="/events" class="btn btn--secondary btn--sm">View All Events</a>
+    </div>
+
+    @if (loadingCategories()) {
+      <div class="lp-cat-grid">
+        @for (_ of [1,2,3,4,5,6]; track $index) {
+          <div class="lp-cat-skeleton"></div>
+        }
+      </div>
+    } @else if (categories().length === 0) {
+      <p class="lp-empty-text">No categories available yet.</p>
+    } @else {
+      <div class="lp-cat-grid">
+        @for (cat of categories(); track cat.id) {
+          <button class="lp-cat-card" type="button" (click)="goCategory(cat.id)">
+            <span class="lp-cat-card__icon">{{ getCategoryIcon(cat.name) }}</span>
+            <span class="lp-cat-card__name">{{ cat.name }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ── Upcoming Events ────────────────────────────────────────────────────── -->
+<section class="lp-section lp-section--tinted">
+  <div class="lp-container">
+    <div class="lp-section__header">
+      <div>
+        <h2 class="lp-section__title">Upcoming Events</h2>
+        <p class="lp-section__sub">Don't miss out on these exciting events</p>
+      </div>
+      <a routerLink="/events" class="btn btn--secondary btn--sm">View All</a>
+    </div>
+
+    @if (loadingEvents()) {
+      <div class="lp-events-grid">
+        @for (_ of [1,2,3,4,5,6]; track $index) {
+          <div class="lp-event-skeleton"></div>
+        }
+      </div>
+    } @else if (events().length === 0) {
+      <div class="lp-empty-state">
+        <p>No upcoming events yet. Check back soon!</p>
+        <a routerLink="/events" class="btn btn--primary">Browse Events</a>
+      </div>
+    } @else {
+      <div class="lp-events-grid">
+        @for (event of events(); track event.id) {
+          <app-event-card [event]="event" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────────────────────── -->
+<section class="lp-cta">
+  <div class="lp-container">
+    <div class="lp-cta__inner">
+      <h2>Ready to host your own event?</h2>
+      <p>Join thousands of organizers who use EventHub to create and manage unforgettable events.</p>
+      <div class="lp-cta__btns">
+        <a routerLink="/register" class="btn btn--primary btn--lg lp-cta__btn-light">Get Started Free</a>
+        <a routerLink="/events" class="btn btn--secondary btn--lg lp-cta__btn-ghost">Browse Events</a>
+      </div>
+    </div>
+  </div>
+</section>

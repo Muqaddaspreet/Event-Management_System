@@ -1,0 +1,304 @@
+.el-page {
+  min-height: calc(100vh - 64px);
+}
+
+/* ── Page header ──────────────────────────────────────────────────────────── */
+.el-header {
+  background: var(--eh-surface);
+  border-bottom: 1px solid var(--eh-border);
+  padding: 32px 0;
+}
+
+.el-header__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.el-header__title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--eh-text);
+  letter-spacing: -0.5px;
+  margin: 0 0 4px;
+}
+
+.el-header__sub {
+  font-size: 14px;
+  color: var(--eh-text-3);
+  margin: 0;
+}
+
+/* Search bar */
+.el-search {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 400px;
+}
+
+.el-search-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.el-search-icon {
+  position: absolute;
+  left: 13px;
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.el-search-input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1.5px solid var(--eh-border-2);
+  border-radius: var(--eh-r-sm);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--eh-text);
+  background: var(--eh-surface);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+
+  &::placeholder { color: var(--eh-muted); }
+
+  &:focus {
+    border-color: var(--eh-primary);
+    box-shadow: 0 0 0 3px rgba(124,58,237,.1);
+  }
+}
+
+/* ── Body layout ──────────────────────────────────────────────────────────── */
+.el-body {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* ── Filter sidebar ───────────────────────────────────────────────────────── */
+.el-filters {
+  flex: 0 0 220px;
+  position: sticky;
+  top: 80px;
+  background: var(--eh-surface);
+  border: 1px solid var(--eh-border);
+  border-radius: var(--eh-r-lg);
+  padding: 18px;
+  box-shadow: var(--eh-shadow-sm);
+}
+
+.el-filters__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--eh-text);
+    margin: 0;
+  }
+}
+
+.el-filter-group {
+  h3 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--eh-muted);
+    margin: 0 0 10px;
+  }
+}
+
+.el-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.el-cat-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: var(--eh-r-sm);
+  padding: 9px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--eh-text-2);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  font-weight: 500;
+
+  &:hover:not(&--active) { background: var(--eh-bg); color: var(--eh-text); }
+
+  &--active {
+    background: var(--eh-primary-tint);
+    color: var(--eh-primary-700);
+    font-weight: 700;
+  }
+}
+
+.btn-ghost-link {
+  background: none;
+  border: none;
+  color: var(--eh-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  flex-shrink: 0;
+  &:hover { text-decoration: underline; }
+}
+
+/* ── Results area ─────────────────────────────────────────────────────────── */
+.el-results {
+  flex: 1;
+  min-width: 0;
+}
+
+.el-results__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.el-results__count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--eh-text-3);
+}
+
+/* Events grid */
+.el-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Skeleton cards */
+.el-skeleton {
+  height: 280px;
+  border-radius: var(--eh-r-lg);
+  background: linear-gradient(90deg, var(--eh-border) 25%, var(--eh-divider) 50%, var(--eh-border) 75%);
+  background-size: 200% 100%;
+  animation: el-shimmer 1.4s ease infinite;
+}
+
+@keyframes el-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty / Error state */
+.el-empty-state {
+  text-align: center;
+  padding: 72px 24px;
+
+  &__icon { font-size: 52px; margin-bottom: 16px; }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--eh-text);
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--eh-text-3);
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+}
+
+/* ── Pagination ───────────────────────────────────────────────────────────── */
+.el-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 40px;
+}
+
+.el-page-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--eh-border-2);
+  border-radius: var(--eh-r-sm);
+  background: var(--eh-surface);
+  color: var(--eh-text);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s;
+
+  &:hover:not(:disabled) { background: var(--eh-bg); }
+  &:disabled { opacity: .4; cursor: not-allowed; }
+}
+
+.el-page-nums {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.el-page-num {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--eh-border-2);
+  border-radius: var(--eh-r-sm);
+  background: var(--eh-surface);
+  color: var(--eh-text);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+
+  &:hover:not(&--active) { background: var(--eh-bg); }
+
+  &--active {
+    background: var(--eh-gradient);
+    color: #fff;
+    border-color: var(--eh-primary);
+    box-shadow: var(--eh-shadow-primary);
+  }
+}
+
+.el-page-ellipsis {
+  color: var(--eh-muted);
+  width: 28px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 36px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 919px) {
+  .el-body { flex-direction: column; }
+  .el-filters { flex: none; width: 100%; position: static; }
+  .el-header__inner { flex-direction: column; align-items: flex-start; }
+  .el-search { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .el-grid { grid-template-columns: 1fr; }
+}

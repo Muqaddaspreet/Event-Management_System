@@ -1,4 +1,158 @@
-<div>
-  <h2>Events</h2>
-  <p>Published events list — placeholder</p>
+<div class="el-page">
+
+  <!-- ── Page header with search ── -->
+  <div class="el-header">
+    <div class="el-header__inner">
+      <div>
+        <h1 class="el-header__title">Browse Events</h1>
+        <p class="el-header__sub">Discover and register for upcoming published events</p>
+      </div>
+      <div class="el-search">
+        <div class="el-search-wrap">
+          <span class="el-search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="text"
+            class="el-search-input"
+            placeholder="Search events…"
+            [value]="pendingSearch()"
+            (input)="pendingSearch.set($any($event.target).value)"
+            (keydown.enter)="onSearchSubmit()">
+        </div>
+        <button class="btn btn--primary" (click)="onSearchSubmit()">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-body">
+
+    <!-- ── Filter sidebar ── -->
+    <aside class="el-filters">
+      <div class="el-filters__header">
+        <h2>Filters</h2>
+        @if (hasActiveFilters) {
+          <button class="btn-ghost-link" type="button" (click)="clearFilters()">Clear all</button>
+        }
+      </div>
+
+      <div class="el-filter-group">
+        <h3>Category</h3>
+        <ul class="el-cat-list" role="list">
+          <li>
+            <button
+              type="button"
+              class="el-cat-btn"
+              [class.el-cat-btn--active]="selectedCategoryId() === null"
+              (click)="selectCategory(null)">
+              All Categories
+            </button>
+          </li>
+          @for (cat of categories(); track cat.id) {
+            <li>
+              <button
+                type="button"
+                class="el-cat-btn"
+                [class.el-cat-btn--active]="selectedCategoryId() === cat.id"
+                (click)="selectCategory(cat.id)">
+                {{ cat.name }}
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ── Results ── -->
+    <div class="el-results">
+
+      <!-- Results count (only when loaded and no error) -->
+      @if (!loading() && !error()) {
+        <div class="el-results__header">
+          <span class="el-results__count">
+            @if (totalCount() === 0) {
+              No events found
+            } @else {
+              {{ totalCount() }} event{{ totalCount() === 1 ? '' : 's' }} found
+            }
+          </span>
+        </div>
+      }
+
+      <!-- Loading skeletons -->
+      @if (loading()) {
+        <div class="el-grid">
+          @for (_ of [1,2,3,4,5,6,7,8,9,10,11,12]; track $index) {
+            <div class="el-skeleton"></div>
+          }
+        </div>
+      }
+
+      <!-- Error state -->
+      @else if (error()) {
+        <div class="el-empty-state">
+          <div class="el-empty-state__icon">⚠️</div>
+          <h3>Failed to load events</h3>
+          <p>There was a problem connecting to the server.<br>Please try again.</p>
+          <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+        </div>
+      }
+
+      <!-- Empty state -->
+      @else if (events().length === 0) {
+        <div class="el-empty-state">
+          <div class="el-empty-state__icon">🔍</div>
+          <h3>No events found</h3>
+          <p>No events match your current filters.<br>Try adjusting your search or category.</p>
+          <button class="btn btn--secondary" type="button" (click)="clearFilters()">Clear filters</button>
+        </div>
+      }
+
+      <!-- Events grid -->
+      @else {
+        <div class="el-grid">
+          @for (event of events(); track event.id) {
+            <app-event-card [event]="event" />
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages > 1) {
+          <nav class="el-pagination" aria-label="Event pages">
+            <button
+              class="el-page-btn"
+              type="button"
+              [disabled]="currentPage() === 1"
+              (click)="goToPage(currentPage() - 1)">
+              ‹ Prev
+            </button>
+
+            <div class="el-page-nums">
+              @for (p of pageNumbers; track $index) {
+                @if (p === -1) {
+                  <span class="el-page-ellipsis">…</span>
+                } @else {
+                  <button
+                    class="el-page-num"
+                    type="button"
+                    [class.el-page-num--active]="p === currentPage()"
+                    (click)="goToPage(p)">
+                    {{ p }}
+                  </button>
+                }
+              }
+            </div>
+
+            <button
+              class="el-page-btn"
+              type="button"
+              [disabled]="currentPage() === totalPages"
+              (click)="goToPage(currentPage() + 1)">
+              Next ›
+            </button>
+          </nav>
+        }
+      }
+
+    </div>
+  </div>
+
 </div>
