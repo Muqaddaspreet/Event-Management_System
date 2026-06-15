@@ -1,5 +1,159 @@
-<div>
-  <h2>Register</h2>
-  <p>Registration form — placeholder</p>
-  <a routerLink="/login">Login</a>
+<div class="auth-split">
+
+  <!-- ── Left: form panel ── -->
+  <div class="auth-split__form">
+    <div class="auth-form-wrap">
+
+      <h2 class="auth-heading">Create your account</h2>
+      <p class="auth-sub">Join EventHub and start exploring events today</p>
+
+      @if (serverError()) {
+        <div class="auth-error-banner" role="alert">{{ serverError() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="reg-fullname">
+            Full name <span class="form-required">*</span>
+          </label>
+          <input
+            id="reg-fullname"
+            type="text"
+            formControlName="fullName"
+            class="form-control"
+            [class.form-control--error]="fullName.invalid && fullName.touched"
+            placeholder="Jane Smith"
+            autocomplete="name">
+          @if (fullName.invalid && fullName.touched) {
+            <p class="form-error">
+              @if (fullName.errors?.['required']) { Full name is required. }
+              @else if (fullName.errors?.['maxlength']) { Full name must be 100 characters or less. }
+            </p>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="reg-email">
+            Email address <span class="form-required">*</span>
+          </label>
+          <input
+            id="reg-email"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.form-control--error]="email.invalid && email.touched"
+            placeholder="you@example.com"
+            autocomplete="email">
+          @if (email.invalid && email.touched) {
+            <p class="form-error">
+              @if (email.errors?.['required']) { Email is required. }
+              @else if (email.errors?.['email']) { Enter a valid email address. }
+            </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="reg-password">
+            Password <span class="form-required">*</span>
+          </label>
+          <div class="form-input-wrapper">
+            <input
+              id="reg-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              class="form-control"
+              [class.form-control--error]="password.invalid && password.touched"
+              placeholder="Min. 8 characters"
+              autocomplete="new-password">
+            <button type="button" class="form-eye-btn" (click)="togglePassword()" tabindex="-1">
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          @if (password.invalid && password.touched) {
+            <p class="form-error">
+              @if (password.errors?.['required']) { Password is required. }
+              @else if (password.errors?.['minlength']) { Password must be at least 8 characters. }
+            </p>
+          }
+        </div>
+
+        <!-- Role selector -->
+        <div class="form-group">
+          <label class="form-label">
+            I am joining as <span class="form-required">*</span>
+          </label>
+          <div class="role-selector">
+            <div
+              class="role-card"
+              [class.role-card--active]="role.value === 'Attendee'"
+              (click)="selectRole('Attendee')"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="selectRole('Attendee')"
+              (keydown.space)="selectRole('Attendee')">
+              <div class="role-card__icon">🎟️</div>
+              <div class="role-card__title">Attendee</div>
+              <div class="role-card__desc">Browse and register for events</div>
+            </div>
+            <div
+              class="role-card"
+              [class.role-card--active]="role.value === 'Organizer'"
+              (click)="selectRole('Organizer')"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="selectRole('Organizer')"
+              (keydown.space)="selectRole('Organizer')">
+              <div class="role-card__icon">🗓️</div>
+              <div class="role-card__title">Organizer</div>
+              <div class="role-card__desc">Create and manage your events</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn btn--primary btn--lg btn--full"
+          [disabled]="loading()">
+          {{ loading() ? 'Creating account…' : 'Create account' }}
+        </button>
+
+      </form>
+
+      <p class="auth-footer">
+        Already have an account?
+        <a routerLink="/login" class="auth-link">Sign in here</a>
+      </p>
+
+    </div>
+  </div>
+
+  <!-- ── Right: gradient brand panel ── -->
+  <div class="auth-split__brand">
+    <div class="auth-split__brand-content">
+
+      <a class="auth-brand-mark" routerLink="/events">
+        <span class="auth-logo-sq"></span>
+        <span class="auth-brand-name">EventHub</span>
+      </a>
+
+      <h1 class="auth-panel-heading">Everything you need for events</h1>
+      <p class="auth-panel-sub">
+        Whether you're attending your first event or managing hundreds, EventHub has you covered.
+      </p>
+
+      <ul class="auth-feature-list">
+        <li>Create and publish events in minutes</li>
+        <li>Seamless attendee registration</li>
+        <li>Real-time capacity management</li>
+        <li>Admin approval workflow built in</li>
+      </ul>
+
+    </div>
+  </div>
+
 </div>

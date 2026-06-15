@@ -1,0 +1,123 @@
+.eh-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--eh-border);
+  box-shadow: var(--eh-shadow-sm);
+}
+
+.eh-navbar__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Brand */
+.eh-navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.eh-navbar__logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--eh-gradient);
+  border-radius: 8px;
+  display: block;
+  box-shadow: 0 4px 8px rgba(124, 58, 237, .28);
+  flex-shrink: 0;
+}
+
+.eh-navbar__brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--eh-text);
+  letter-spacing: -0.5px;
+}
+
+/* Nav links */
+.eh-navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.eh-navbar__link {
+  padding: 8px 14px;
+  border-radius: var(--eh-r-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--eh-text-3);
+  text-decoration: none;
+  transition: color .15s, background .15s;
+  display: block;
+
+  &:hover {
+    color: var(--eh-text);
+    background: var(--eh-bg);
+  }
+
+  &--active {
+    color: var(--eh-primary-700) !important;
+    background: var(--eh-primary-tint) !important;
+    font-weight: 600;
+  }
+}
+
+/* Right actions */
+.eh-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.eh-navbar__user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.eh-navbar__user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--eh-text);
+  line-height: 1.2;
+}
+
+.eh-navbar__user-role {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--eh-primary);
+  line-height: 1.2;
+  text-transform: capitalize;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .eh-navbar__inner {
+    padding: 0 16px;
+    gap: 4px;
+  }
+
+  .eh-navbar__user {
+    display: none;
+  }
+
+  .eh-navbar__brand-name {
+    display: none;
+  }
+}

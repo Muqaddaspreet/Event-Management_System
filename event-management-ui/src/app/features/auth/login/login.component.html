@@ -1,5 +1,105 @@
-<div>
-  <h2>Login</h2>
-  <p>Login form — placeholder</p>
-  <a routerLink="/register">Register</a>
+<div class="auth-split">
+
+  <!-- ── Left: gradient brand panel ── -->
+  <div class="auth-split__brand">
+    <div class="auth-split__brand-content">
+
+      <a class="auth-brand-mark" routerLink="/events">
+        <span class="auth-logo-sq"></span>
+        <span class="auth-brand-name">EventHub</span>
+      </a>
+
+      <h1 class="auth-panel-heading">Discover &amp; Manage Events</h1>
+      <p class="auth-panel-sub">
+        Your all-in-one platform for creating, discovering, and attending events that matter.
+      </p>
+
+      <ul class="auth-feature-list">
+        <li>Browse thousands of published events</li>
+        <li>Register with a single click</li>
+        <li>Organizers get instant approval workflow</li>
+        <li>Admins keep everything running smoothly</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- ── Right: form panel ── -->
+  <div class="auth-split__form">
+    <div class="auth-form-wrap">
+
+      <h2 class="auth-heading">Welcome back</h2>
+      <p class="auth-sub">Sign in to your EventHub account</p>
+
+      @if (serverError()) {
+        <div class="auth-error-banner" role="alert">{{ serverError() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="login-email">
+            Email address <span class="form-required">*</span>
+          </label>
+          <input
+            id="login-email"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.form-control--error]="email.invalid && email.touched"
+            placeholder="you@example.com"
+            autocomplete="email">
+          @if (email.invalid && email.touched) {
+            <p class="form-error">
+              @if (email.errors?.['required']) { Email is required. }
+              @else if (email.errors?.['email']) { Enter a valid email address. }
+            </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="login-password">
+            Password <span class="form-required">*</span>
+          </label>
+          <div class="form-input-wrapper">
+            <input
+              id="login-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              class="form-control"
+              [class.form-control--error]="password.invalid && password.touched"
+              placeholder="Enter your password"
+              autocomplete="current-password">
+            <button type="button" class="form-eye-btn" (click)="togglePassword()" tabindex="-1">
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          @if (password.invalid && password.touched) {
+            <p class="form-error">
+              @if (password.errors?.['required']) { Password is required. }
+              @else if (password.errors?.['minlength']) { Password must be at least 8 characters. }
+            </p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn btn--primary btn--lg btn--full"
+          [disabled]="loading()">
+          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        </button>
+
+      </form>
+
+      <p class="auth-footer">
+        Don't have an account?
+        <a routerLink="/register" class="auth-link">Register here</a>
+      </p>
+
+    </div>
+  </div>
+
 </div>

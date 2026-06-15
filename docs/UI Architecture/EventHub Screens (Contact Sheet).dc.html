@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: #1a1d29; background: #eef0f5; }
+  .cs-frame iframe { border: 0; }
+  @media print {
+    body { background: #fff; }
+    .cs-noprint { display: none !important; }
+    .cs-grid { gap: 22px !important; }
+    .cs-card { break-inside: avoid; box-shadow: none !important; border: 1px solid #e6e8ef !important; }
+  }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #eef0f5;">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 44px 28px 72px;">
+
+    <!-- header -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 8px;">
+      <div style="display: flex; align-items: center; gap: 13px;">
+        <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:23px;height:23px"></i></div>
+        <div>
+          <div style="font-size: 22px; font-weight: 800; letter-spacing: -.5px;">EventHub — All Screens</div>
+          <div style="font-size: 14px; color: #667085;">Event Management System · 12-screen UI contact sheet</div>
+        </div>
+      </div>
+      <div class="cs-noprint" style="display: flex; gap: 10px;">
+        <a href="EventHub.dc.html" style="text-decoration: none; background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="external-link" style="width:16px;height:16px"></i> Open prototype</a>
+        <button onClick="{{ doPrint }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 16px rgba(124,58,237,.3);"><i data-lucide="printer" style="width:16px;height:16px"></i> Save as PDF</button>
+      </div>
+    </div>
+    <p class="cs-noprint" style="font-size: 13px; color: #98a2b3; margin: 4px 0 28px; max-width: 680px;">Each frame is a live thumbnail of the real screen. Click any frame to open that page in the full prototype. Use “Save as PDF” (or Ctrl/Cmd + P) to export this sheet.</p>
+
+    <!-- grid -->
+    <div class="cs-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(372px, 1fr)); gap: 26px;">
+      <sc-for list="{{ frames }}" as="f" hint-placeholder-count="12">
+        <div class="cs-card" style="background: #fff; border: 1px solid #e6e8ef; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,24,40,.07);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 13px 16px; border-bottom: 1px solid #f0f1f5;">
+            <span style="font-size: 12px; font-weight: 800; color: #fff; background: linear-gradient(135deg,#7c3aed,#4f46e5); width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">{{ f.n }}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 14px; font-weight: 700;">{{ f.title }}</div>
+              <div style="font-size: 11px; color: #98a2b3;">{{ f.role }}</div>
+            </div>
+            <a href="{{ f.href }}" class="cs-noprint" style="text-decoration: none; color: #7c3aed; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">Open <i data-lucide="arrow-up-right" style="width:14px;height:14px"></i></a>
+          </div>
+          <a href="{{ f.href }}" class="cs-frame" style="display: block; position: relative; width: 100%; height: 248px; overflow: hidden; background: #f6f7fb;">
+            <iframe src="{{ f.src }}" scrolling="no" tabindex="-1" style="position: absolute; top: 0; left: 0; width: 1240px; height: 826px; transform: scale(0.30); transform-origin: top left; pointer-events: none;"></iframe>
+          </a>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="text-align: center; font-size: 12px; color: #b0b4c0; margin-top: 36px;">EventHub UI mock · generated contact sheet · 12 screens</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  frames = [
+    { n: '01', title: 'Landing / Home', role: 'Public', screen: 'landing' },
+    { n: '02', title: 'Login', role: 'Public', screen: 'login' },
+    { n: '03', title: 'Register', role: 'Public', screen: 'register' },
+    { n: '04', title: 'Events Listing', role: 'Attendee', screen: 'events' },
+    { n: '05', title: 'Event Details', role: 'Attendee', screen: 'eventDetails' },
+    { n: '06', title: 'My Registrations', role: 'Attendee', screen: 'myRegistrations' },
+    { n: '07', title: 'Organizer Dashboard', role: 'Organizer', screen: 'organizerDashboard' },
+    { n: '08', title: 'Create / Edit Event', role: 'Organizer', screen: 'eventForm' },
+    { n: '09', title: 'Admin Dashboard', role: 'Admin', screen: 'adminDashboard' },
+    { n: '10', title: 'Manage Events', role: 'Admin', screen: 'adminManageEvents' },
+    { n: '11', title: 'Approve / Reject', role: 'Admin', screen: 'adminApprove' },
+    { n: '12', title: 'User Profile', role: 'Attendee', screen: 'profile' },
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { try { if (window.lucide) window.lucide.createIcons(); } catch (e) {} }
+
+  renderVals() {
+    return {
+      frames: this.frames.map(f => ({
+        ...f,
+        src: 'EventHub.dc.html?screen=' + f.screen + '&embed=1',
+        href: 'EventHub.dc.html?screen=' + f.screen,
+      })),
+      doPrint: () => { try { window.print(); } catch (e) {} },
+    };
+  }
+}
+</script>
+</body>
+</html>

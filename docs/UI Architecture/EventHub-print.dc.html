@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: #1a1d29; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #d9dce4; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+  input::placeholder, textarea::placeholder { color: #98a2b3; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #7c3aed !important; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
+  @keyframes eh-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes eh-toast { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  .eh-screen { animation: eh-fade .35s ease; }
+  .eh-link:hover { color: #7c3aed !important; }
+  .eh-navlink:hover { color: #1a1d29 !important; }
+  .eh-card-hover { transition: transform .18s ease, box-shadow .18s ease; }
+  .eh-card-hover:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(16,24,40,.12) !important; }
+  .eh-btn { transition: transform .12s ease, box-shadow .18s ease, background .18s ease; }
+  .eh-btn:hover { transform: translateY(-1px); }
+  .eh-side-item { transition: background .15s ease, color .15s ease; }
+  .eh-row:hover { background: #fafafe !important; }
+  @media (max-width: 920px) {
+    .eh-sidebar { display: none !important; }
+    .eh-filters { display: none !important; }
+    .eh-grid-2 { grid-template-columns: 1fr !important; }
+    .eh-split { grid-template-columns: 1fr !important; }
+    .eh-hero { grid-template-columns: 1fr !important; }
+    .eh-authwrap { padding: 24px 16px !important; }
+    .eh-pad { padding: 20px 16px !important; }
+    .eh-nav-links { display: none !important; }
+  }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #f6f7fb;">
+
+  <!-- ===================== OVERVIEW / SHOWCASE INDEX ===================== -->
+  <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+    <div class="eh-screen" style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <div style="width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:22px;height:22px"></i></div>
+        <span style="font-size: 22px; font-weight: 800; letter-spacing: -.5px;">EventHub</span>
+        <span style="font-size: 12px; font-weight: 600; color: #6d28d9; background: #f4f0ff; padding: 4px 10px; border-radius: 999px;">UI Mock · v1</span>
+      </div>
+      <h1 style="font-size: 34px; font-weight: 800; letter-spacing: -1px; margin: 14px 0 6px;">Event Management System — UI Mockups</h1>
+      <p style="font-size: 16px; color: #667085; margin: 0 0 8px; max-width: 640px; line-height: 1.6;">A clickable, portfolio-quality prototype of all 12 screens. Click any card to open the live screen — in-app navigation, tabs, filters and forms all work. Use the floating button to return here anytime.</p>
+
+      <sc-for list="{{ overviewGroups }}" as="group" hint-placeholder-count="4">
+        <div style="margin-top: 40px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+            <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #475467;">{{ group.title }}</span>
+            <span style="height: 1px; flex: 1; background: #e6e8ef;"></span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px;">
+            <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="3">
+              <div class="eh-card-hover" onClick="{{ item.open }}" style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.05); cursor: pointer; overflow: hidden;">
+                <div style="height: 96px; background: {{ item.thumb }}; position: relative; display: flex; align-items: flex-end; padding: 12px;">
+                  <span style="font-size: 28px; font-weight: 800; color: rgba(255,255,255,.55); position: absolute; top: 10px; right: 16px;">{{ item.n }}</span>
+                  <span style="font-size: 11px; font-weight: 700; color: #fff; background: rgba(0,0,0,.18); backdrop-filter: blur(4px); padding: 4px 9px; border-radius: 999px;">{{ item.role }}</span>
+                </div>
+                <div style="padding: 16px 16px 18px;">
+                  <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">{{ item.title }}</div>
+                  <div style="font-size: 13px; color: #667085; line-height: 1.5; min-height: 38px;">{{ item.desc }}</div>
+                  <div class="eh-link" style="display: flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 13px; font-weight: 700; color: #7c3aed;">Open screen <i data-lucide="arrow-right" style="width:15px;height:15px"></i></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- ===================== LANDING / HOME ===================== -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+    <div class="eh-screen" style="background: #fff; min-height: 100vh;">
+      <!-- public navbar -->
+      <div style="border-bottom: 1px solid #eceef4; background: rgba(255,255,255,.9); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 20;">
+        <div style="max-width: 1180px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;">
+          <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:19px;height:19px"></i></div>
+            <span style="font-size: 19px; font-weight: 800; letter-spacing: -.4px;">EventHub</span>
+          </div>
+          <div class="eh-nav-links" style="display: flex; align-items: center; gap: 30px; font-size: 14px; font-weight: 500; color: #667085;">
+            <span class="eh-navlink" style="cursor: pointer; color: #1a1d29; font-weight: 600;">Home</span>
+            <span class="eh-navlink" onClick="{{ goEvents }}" style="cursor: pointer;">Events</span>
+            <span class="eh-navlink" style="cursor: pointer;">Categories</span>
+            <span class="eh-navlink" style="cursor: pointer;">Venues</span>
+            <span class="eh-navlink" style="cursor: pointer;">About Us</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="eh-btn" onClick="{{ goLogin }}" style="background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 9px 18px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Login</button>
+            <button class="eh-btn" onClick="{{ goRegister }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 9px 18px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; box-shadow: 0 4px 12px rgba(124,58,237,.32);">Register</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- hero -->
+      <div style="max-width: 1180px; margin: 0 auto; padding: 40px 24px 0;">
+        <div class="eh-hero" style="display: grid; grid-template-columns: 1fr 1.05fr; gap: 36px; align-items: center;">
+          <div>
+            <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: #6d28d9; background: #f4f0ff; padding: 6px 13px; border-radius: 999px;"><i data-lucide="sparkles" style="width:15px;height:15px"></i> 1,200+ events near you</span>
+            <h1 style="font-size: 52px; line-height: 1.05; font-weight: 800; letter-spacing: -1.5px; margin: 18px 0 0;">Discover &amp; Book<br><span style="background: linear-gradient(135deg,#7c3aed,#4f46e5); -webkit-background-clip: text; background-clip: text; color: transparent;">Amazing Events</span></h1>
+            <p style="font-size: 17px; color: #667085; line-height: 1.6; margin: 18px 0 26px; max-width: 440px;">Find workshops, concerts, conferences and more exciting events near you — book your seat in seconds.</p>
+            <div style="display: flex; gap: 10px; background: #fff; border: 1px solid #e6e8ef; border-radius: 14px; padding: 8px; box-shadow: 0 8px 28px rgba(16,24,40,.08); max-width: 460px;">
+              <div style="display: flex; align-items: center; gap: 9px; flex: 1; padding: 0 12px;"><i data-lucide="search" style="width:18px;height:18px;color:#98a2b3"></i><input placeholder="Search events, categories or venues..." style="border: none; outline: none; width: 100%; font-size: 14px; font-family: inherit; background: transparent;"></div>
+              <button class="eh-btn" onClick="{{ goEvents }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Search</button>
+            </div>
+            <div style="display: flex; gap: 28px; margin-top: 28px;">
+              <div><div style="font-size: 22px; font-weight: 800;">1.2k+</div><div style="font-size: 13px; color: #98a2b3;">Events</div></div>
+              <div><div style="font-size: 22px; font-weight: 800;">86k</div><div style="font-size: 13px; color: #98a2b3;">Attendees</div></div>
+              <div><div style="font-size: 22px; font-weight: 800;">120+</div><div style="font-size: 13px; color: #98a2b3;">Cities</div></div>
+            </div>
+          </div>
+          <div style="position: relative; height: 380px; border-radius: 20px; overflow: hidden; background: linear-gradient(135deg,#7c3aed,#4f46e5,#a855f7); box-shadow: 0 24px 60px rgba(124,58,237,.32);">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.28), transparent 45%), radial-gradient(circle at 80% 75%, rgba(236,72,153,.4), transparent 50%);"></div>
+            <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: linear-gradient(to top, rgba(20,10,40,.55), transparent);"></div>
+            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-family: ui-monospace, monospace; font-size: 12px; color: rgba(255,255,255,.7); letter-spacing: 1px;">[ event hero image ]</span>
+            <div style="position: absolute; bottom: 22px; left: 22px; color: #fff;"><div style="font-size: 13px; opacity: .8;">Featured · Live now</div><div style="font-size: 22px; font-weight: 700;">Summer Music Festival</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- popular categories -->
+      <div style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+          <h2 style="font-size: 22px; font-weight: 700; margin: 0;">Popular Categories</h2>
+          <span class="eh-link" onClick="{{ goEvents }}" style="font-size: 14px; font-weight: 600; color: #7c3aed; cursor: pointer;">View all</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+          <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
+            <div class="eh-card-hover" onClick="{{ goEvents }}" style="display: flex; align-items: center; gap: 13px; background: #fff; border: 1px solid #eceef4; border-radius: 14px; padding: 16px; cursor: pointer; box-shadow: 0 1px 2px rgba(16,24,40,.04);">
+              <div style="width: 42px; height: 42px; border-radius: 11px; background: {{ cat.thumb }}; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;"><i data-lucide="{{ cat.icon }}" style="width:20px;height:20px"></i></div>
+              <div><div style="font-size: 15px; font-weight: 700;">{{ cat.name }}</div><div style="font-size: 13px; color: #98a2b3;">{{ cat.countLabel }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- upcoming events -->
+      <div style="max-width: 1180px; margin: 0 auto; padding: 48px 24px 72px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+          <h2 style="font-size: 22px; font-weight: 700; margin: 0;">Upcoming Events</h2>
+          <span class="eh-link" onClick="{{ goEvents }}" style="font-size: 14px; font-weight: 600; color: #7c3aed; cursor: pointer;">View all</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+          <sc-for list="{{ popularEvents }}" as="ev" hint-placeholder-count="4">
+            <div class="eh-card-hover" onClick="{{ ev.open }}" style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 1px 3px rgba(16,24,40,.06);">
+              <div style="height: 150px; background: {{ ev.thumb }}; position: relative; display: flex; align-items: flex-end; padding: 12px;">
+                <span style="position: absolute; top: 12px; right: 12px; font-size: 12px; font-weight: 700; color: #1a1d29; background: rgba(255,255,255,.92); padding: 4px 10px; border-radius: 999px;">{{ ev.priceLabel }}</span>
+                <span style="font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,.75);">[ {{ ev.category }} ]</span>
+              </div>
+              <div style="padding: 14px 15px 16px;">
+                <div style="font-size: 15px; font-weight: 700; margin-bottom: 7px;">{{ ev.title }}</div>
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #667085;"><i data-lucide="calendar" style="width:14px;height:14px"></i> {{ ev.date }}</div>
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #667085; margin-top: 4px;"><i data-lucide="map-pin" style="width:14px;height:14px"></i> {{ ev.location }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div style="border-top: 1px solid #eceef4; background: #fafafe;">
+        <div style="max-width: 1180px; margin: 0 auto; padding: 32px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:17px;height:17px"></i></div><span style="font-weight: 800;">EventHub</span></div>
+          <span style="font-size: 13px; color: #98a2b3;">© 2026 EventHub. Portfolio UI mock.</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== LOGIN ===================== -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+    <div class="eh-screen eh-authwrap" style="min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr;">
+      <div style="position: relative; background: linear-gradient(150deg,#4f46e5,#7c3aed 55%,#a855f7); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; color: #fff; overflow: hidden;">
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 20% 15%, rgba(255,255,255,.22), transparent 40%), radial-gradient(circle at 85% 80%, rgba(236,72,153,.45), transparent 45%);"></div>
+        <div onClick="{{ goLanding }}" style="position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer;"><div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center;"><i data-lucide="ticket" style="width:19px;height:19px"></i></div><span style="font-size: 19px; font-weight: 800;">EventHub</span></div>
+        <div style="position: relative;">
+          <div style="font-family: ui-monospace, monospace; font-size: 12px; color: rgba(255,255,255,.6); margin-bottom: 18px;">[ welcome illustration ]</div>
+          <h2 style="font-size: 34px; font-weight: 800; line-height: 1.15; letter-spacing: -1px; margin: 0 0 12px;">Your next great<br>experience awaits.</h2>
+          <p style="font-size: 15px; color: rgba(255,255,255,.85); line-height: 1.6; max-width: 360px;">Sign in to manage your bookings, discover new events, and never miss out on what matters.</p>
+        </div>
+        <div style="position: relative; font-size: 13px; color: rgba(255,255,255,.7);">Trusted by 86,000+ event-goers worldwide</div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; padding: 48px;">
+        <div style="width: 100%; max-width: 380px;">
+          <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -.6px; margin: 0 0 6px;">Welcome back</h1>
+          <p style="font-size: 15px; color: #667085; margin: 0 0 28px;">Login to your account to continue.</p>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Email</label>
+          <div style="position: relative; margin-bottom: 18px;"><i data-lucide="mail" style="width:17px;height:17px;color:#98a2b3;position:absolute;left:13px;top:50%;transform:translateY(-50%)"></i><input placeholder="you@example.com" style="width: 100%; padding: 12px 14px 12px 40px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px;"><label style="font-size: 13px; font-weight: 600; color: #344054;">Password</label><span class="eh-link" style="font-size: 13px; font-weight: 600; color: #7c3aed; cursor: pointer;">Forgot password?</span></div>
+          <div style="position: relative; margin-bottom: 22px;"><i data-lucide="lock" style="width:17px;height:17px;color:#98a2b3;position:absolute;left:13px;top:50%;transform:translateY(-50%)"></i><input type="password" placeholder="Enter your password" style="width: 100%; padding: 12px 40px 12px 40px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"><i data-lucide="eye" style="width:17px;height:17px;color:#98a2b3;position:absolute;right:13px;top:50%;transform:translateY(-50%);cursor:pointer"></i></div>
+          <button class="eh-btn" onClick="{{ goEvents }}" style="width: 100%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 13px; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; box-shadow: 0 8px 20px rgba(124,58,237,.32);">Login</button>
+          <div style="display: flex; align-items: center; gap: 12px; margin: 22px 0;"><span style="height: 1px; flex: 1; background: #e6e8ef;"></span><span style="font-size: 12px; color: #98a2b3;">OR</span><span style="height: 1px; flex: 1; background: #e6e8ef;"></span></div>
+          <button class="eh-btn" onClick="{{ goEvents }}" style="width: 100%; background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px;"><span style="font-weight:800;color:#4285F4;">G</span> Continue with Google</button>
+          <p style="text-align: center; font-size: 14px; color: #667085; margin: 24px 0 0;">Don't have an account? <span class="eh-link" onClick="{{ goRegister }}" style="font-weight: 700; color: #7c3aed; cursor: pointer;">Register here</span></p>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== REGISTER ===================== -->
+  <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ true }}">
+    <div class="eh-screen eh-authwrap" style="min-height: 100vh; display: grid; grid-template-columns: 1fr 1.1fr;">
+      <div style="display: flex; align-items: center; justify-content: center; padding: 48px; order: 1;">
+        <div style="width: 100%; max-width: 400px;">
+          <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 26px;"><div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:19px;height:19px"></i></div><span style="font-size: 19px; font-weight: 800;">EventHub</span></div>
+          <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -.6px; margin: 0 0 6px;">Create your account</h1>
+          <p style="font-size: 15px; color: #667085; margin: 0 0 26px;">Join us to discover amazing events.</p>
+          <div style="display: grid; gap: 16px;">
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Full name</label><input placeholder="Enter your full name" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Email</label><input placeholder="you@example.com" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" class="eh-grid-2">
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Password</label><input type="password" placeholder="Create a password" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Confirm</label><input type="password" placeholder="Confirm password" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+            </div>
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Role</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div onClick="{{ pickAttendee }}" style="border: 1.5px solid {{ attendeeBorder }}; background: {{ attendeeBg }}; border-radius: 11px; padding: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px;"><i data-lucide="user" style="width:18px;height:18px;color:#7c3aed"></i><div><div style="font-size: 14px; font-weight: 700;">Attendee</div><div style="font-size: 12px; color: #98a2b3;">Book events</div></div></div>
+                <div onClick="{{ pickOrganizer }}" style="border: 1.5px solid {{ organizerBorder }}; background: {{ organizerBg }}; border-radius: 11px; padding: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px;"><i data-lucide="calendar-plus" style="width:18px;height:18px;color:#7c3aed"></i><div><div style="font-size: 14px; font-weight: 700;">Organizer</div><div style="font-size: 12px; color: #98a2b3;">Host events</div></div></div>
+              </div>
+            </div>
+            <button class="eh-btn" onClick="{{ goLogin }}" style="width: 100%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 13px; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; box-shadow: 0 8px 20px rgba(124,58,237,.32); margin-top: 2px;">Create account</button>
+          </div>
+          <p style="text-align: center; font-size: 14px; color: #667085; margin: 22px 0 0;">Already have an account? <span class="eh-link" onClick="{{ goLogin }}" style="font-weight: 700; color: #7c3aed; cursor: pointer;">Login here</span></p>
+        </div>
+      </div>
+      <div style="position: relative; background: linear-gradient(150deg,#7c3aed,#4f46e5 60%,#3b82f6); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; color: #fff; overflow: hidden; order: 2;">
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 80% 15%, rgba(255,255,255,.22), transparent 40%), radial-gradient(circle at 15% 85%, rgba(168,85,247,.5), transparent 45%);"></div>
+        <div style="position: relative; font-family: ui-monospace, monospace; font-size: 12px; color: rgba(255,255,255,.6);">[ celebration illustration ]</div>
+        <div style="position: relative;">
+          <h2 style="font-size: 34px; font-weight: 800; line-height: 1.15; letter-spacing: -1px; margin: 0 0 12px;">Start hosting &amp;<br>attending events.</h2>
+          <p style="font-size: 15px; color: rgba(255,255,255,.85); line-height: 1.6; max-width: 360px;">One account for everything — book a seat as an attendee or publish your own events as an organizer.</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><i data-lucide="check-circle-2" style="width:18px;height:18px"></i> Free to join, no credit card</div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><i data-lucide="check-circle-2" style="width:18px;height:18px"></i> Instant e-tickets &amp; reminders</div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><i data-lucide="check-circle-2" style="width:18px;height:18px"></i> Manage everything in one place</div>
+          </div>
+        </div>
+        <div style="position: relative;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== EVENTS LISTING (ATTENDEE) ===================== -->
+  <sc-if value="{{ isEvents }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb;">
+      <!-- app top bar -->
+      <div style="background: #fff; border-bottom: 1px solid #eceef4; position: sticky; top: 0; z-index: 20;">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px;">
+          <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+          <div style="flex: 1; max-width: 520px; display: flex; align-items: center; gap: 9px; background: #f3f4f8; border: 1px solid #ececf3; border-radius: 10px; padding: 9px 14px;"><i data-lucide="search" style="width:17px;height:17px;color:#98a2b3"></i><input placeholder="Search events..." style="border: none; outline: none; background: transparent; width: 100%; font-size: 14px; font-family: inherit;"></div>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 16px;">
+            <div style="position: relative; cursor: pointer; color: #667085;"><i data-lucide="bell" style="width:20px;height:20px"></i><span style="position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; background: #f04438; border-radius: 50%; border: 2px solid #fff;"></span></div>
+            <div onClick="{{ goProfile }}" style="display: flex; align-items: center; gap: 9px; cursor: pointer;"><div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">JD</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eh-pad" style="max-width: 1280px; margin: 0 auto; padding: 28px 24px 56px; display: grid; grid-template-columns: 256px 1fr; gap: 28px; align-items: start;">
+        <!-- filters -->
+        <div class="eh-filters" style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05); position: sticky; top: 88px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;"><span style="font-size: 16px; font-weight: 700;">Filters</span><span class="eh-link" style="font-size: 13px; font-weight: 600; color: #7c3aed; cursor: pointer;">Clear all</span></div>
+          <div style="font-size: 13px; font-weight: 700; color: #475467; margin-bottom: 10px;">Category</div>
+          <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 22px;">
+            <sc-for list="{{ catFilters }}" as="f" hint-placeholder-count="6">
+              <div onClick="{{ f.onSelect }}" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; cursor: pointer; background: {{ f.bg }};">
+                <span style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid {{ f.ring }}; display: flex; align-items: center; justify-content: center;"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{ f.fill }};"></span></span>
+                <span style="font-size: 14px; font-weight: 500; color: {{ f.txt }};">{{ f.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size: 13px; font-weight: 700; color: #475467; margin-bottom: 10px;">Date</div>
+          <input type="date" style="width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 9px; font-size: 13px; font-family: inherit; color: #667085; margin-bottom: 16px;">
+          <div style="font-size: 13px; font-weight: 700; color: #475467; margin-bottom: 10px;">Price</div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 22px;"><input placeholder="Min" style="width: 100%; padding: 9px 10px; border: 1px solid #d0d5dd; border-radius: 9px; font-size: 13px; font-family: inherit;"><span style="color: #98a2b3;">–</span><input placeholder="Max" style="width: 100%; padding: 9px 10px; border: 1px solid #d0d5dd; border-radius: 9px; font-size: 13px; font-family: inherit;"></div>
+          <button class="eh-btn" style="width: 100%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Apply filters</button>
+        </div>
+
+        <!-- results -->
+        <div>
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div><h1 style="font-size: 24px; font-weight: 800; letter-spacing: -.4px; margin: 0 0 4px;">All Events</h1><span style="font-size: 14px; color: #98a2b3;">Showing {{ eventsCount }} events</span></div>
+            <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 13px; color: #667085;">Sort by</span><div style="display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid #d0d5dd; border-radius: 9px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Newest <i data-lucide="chevron-down" style="width:15px;height:15px"></i></div></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+            <sc-for list="{{ filteredEvents }}" as="ev" hint-placeholder-count="6">
+              <div class="eh-card-hover" onClick="{{ ev.open }}" style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 1px 3px rgba(16,24,40,.06);">
+                <div style="height: 140px; background: {{ ev.thumb }}; position: relative; display: flex; align-items: flex-end; padding: 12px;">
+                  <span style="position: absolute; top: 12px; right: 12px; font-size: 12px; font-weight: 700; color: #1a1d29; background: rgba(255,255,255,.92); padding: 4px 10px; border-radius: 999px;">{{ ev.priceLabel }}</span>
+                  <span style="font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,.75);">[ {{ ev.category }} ]</span>
+                </div>
+                <div style="padding: 14px 15px 16px;">
+                  <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">{{ ev.title }}</div>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #667085;"><i data-lucide="calendar" style="width:14px;height:14px"></i> {{ ev.date }} · {{ ev.location }}</div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px;"><span style="font-size: 12px; color: #98a2b3;">{{ ev.going }}</span><span class="eh-link" style="font-size: 13px; font-weight: 700; color: #7c3aed;">View details</span></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <!-- pagination -->
+          <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 32px;">
+            <div style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e6e8ef; background: #fff; display: flex; align-items: center; justify-content: center; color: #98a2b3; cursor: pointer;"><i data-lucide="chevron-left" style="width:16px;height:16px"></i></div>
+            <div style="width: 36px; height: 36px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+            <div style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e6e8ef; background: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; cursor: pointer;">2</div>
+            <div style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e6e8ef; background: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; cursor: pointer;">3</div>
+            <div style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e6e8ef; background: #fff; display: flex; align-items: center; justify-content: center; color: #667085; cursor: pointer;"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== EVENT DETAILS ===================== -->
+  <sc-if value="{{ isEventDetails }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb;">
+      <div style="background: #fff; border-bottom: 1px solid #eceef4; position: sticky; top: 0; z-index: 20;">
+        <div style="max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px;">
+          <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 16px;">
+            <span class="eh-navlink" onClick="{{ goEvents }}" style="font-size: 14px; font-weight: 500; color: #667085; cursor: pointer;">Events</span>
+            <div onClick="{{ goProfile }}" style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; cursor: pointer;">JD</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="max-width: 1180px; margin: 0 auto; padding: 22px 24px 56px;">
+        <div onClick="{{ goEvents }}" class="eh-link" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #667085; cursor: pointer; margin-bottom: 16px;"><i data-lucide="arrow-left" style="width:16px;height:16px"></i> Back to events</div>
+        <!-- hero -->
+        <div style="height: 300px; border-radius: 20px; background: {{ selected.thumb }}; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 26px; box-shadow: 0 16px 44px rgba(16,24,40,.14);">
+          <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,8,30,.55), transparent 60%);"></div>
+          <span style="position: absolute; top: 18px; left: 18px; font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,.7);">[ event banner image ]</span>
+          <div style="position: relative; color: #fff;"><span style="display: inline-block; font-size: 12px; font-weight: 700; background: rgba(255,255,255,.2); backdrop-filter: blur(4px); padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">{{ selected.category }}</span><h1 style="font-size: 34px; font-weight: 800; letter-spacing: -.8px; margin: 0;">{{ selected.title }}</h1></div>
+        </div>
+
+        <div class="eh-split" style="display: grid; grid-template-columns: 1fr 340px; gap: 28px; margin-top: 26px; align-items: start;">
+          <div>
+            <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 26px; box-shadow: 0 1px 2px rgba(16,24,40,.05);">
+              <h2 style="font-size: 19px; font-weight: 700; margin: 0 0 12px;">About this event</h2>
+              <p style="font-size: 15px; color: #475467; line-height: 1.7; margin: 0 0 20px;">Join industry leaders and innovators for two days of insightful talks, hands-on workshops, and unmatched networking opportunities. Whether you're a seasoned professional or just starting out, this event is designed to inspire and connect.</p>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 12px;">What you'll learn</h3>
+              <div style="display: grid; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #475467;"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#12b76a"></i> Latest industry trends &amp; best practices</div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #475467;"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#12b76a"></i> Hands-on workshops with experts</div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #475467;"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#12b76a"></i> Networking with 500+ attendees</div>
+              </div>
+            </div>
+            <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 26px; box-shadow: 0 1px 2px rgba(16,24,40,.05); margin-top: 20px;">
+              <h2 style="font-size: 19px; font-weight: 700; margin: 0 0 16px;">Organizer</h2>
+              <div style="display: flex; align-items: center; gap: 13px;"><div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="building-2" style="width:22px;height:22px"></i></div><div><div style="font-size: 15px; font-weight: 700;">Tech Events Inc.</div><div style="font-size: 13px; color: #98a2b3;">Verified organizer · 24 events hosted</div></div></div>
+            </div>
+          </div>
+
+          <!-- sticky register card -->
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 22px; box-shadow: 0 8px 28px rgba(16,24,40,.08); position: sticky; top: 88px;">
+            <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 18px;"><span style="font-size: 30px; font-weight: 800;">{{ selected.priceLabel }}</span><span style="font-size: 14px; color: #98a2b3;">per ticket</span></div>
+            <div style="display: grid; gap: 14px; margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 12px;"><div style="width: 38px; height: 38px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="calendar" style="width:18px;height:18px"></i></div><div><div style="font-size: 12px; color: #98a2b3;">Date</div><div style="font-size: 14px; font-weight: 600;">{{ selected.date }}</div></div></div>
+              <div style="display: flex; align-items: center; gap: 12px;"><div style="width: 38px; height: 38px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="clock" style="width:18px;height:18px"></i></div><div><div style="font-size: 12px; color: #98a2b3;">Time</div><div style="font-size: 14px; font-weight: 600;">9:00 AM – 5:00 PM</div></div></div>
+              <div style="display: flex; align-items: center; gap: 12px;"><div style="width: 38px; height: 38px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="map-pin" style="width:18px;height:18px"></i></div><div><div style="font-size: 12px; color: #98a2b3;">Location</div><div style="font-size: 14px; font-weight: 600;">{{ selected.location }}</div></div></div>
+              <div style="display: flex; align-items: center; gap: 12px;"><div style="width: 38px; height: 38px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="users" style="width:18px;height:18px"></i></div><div><div style="font-size: 12px; color: #98a2b3;">Seats available</div><div style="font-size: 14px; font-weight: 600;">{{ selected.seats }}</div></div></div>
+            </div>
+            <button class="eh-btn" onClick="{{ registerEvent }}" style="width: 100%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 11px; padding: 14px; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; box-shadow: 0 8px 20px rgba(124,58,237,.32);">Register now</button>
+            <button class="eh-btn" style="width: 100%; background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 11px; padding: 12px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;"><i data-lucide="heart" style="width:16px;height:16px"></i> Save for later</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== MY REGISTRATIONS (ATTENDEE) ===================== -->
+  <sc-if value="{{ isMyReg }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <!-- white sidebar -->
+      <div class="eh-sidebar" style="width: 248px; background: #fff; border-right: 1px solid #eceef4; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+        <div onClick="{{ goEvents }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer;"><i data-lucide="compass" style="width:18px;height:18px"></i> Browse events</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: #f4f0ff; color: #6d28d9; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px;"><i data-lucide="ticket-check" style="width:18px;height:18px"></i> My registrations</div>
+        <div onClick="{{ goProfile }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="user" style="width:18px;height:18px"></i> Profile</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px;">
+        <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 4px;">My registered events</h1>
+        <p style="font-size: 14px; color: #98a2b3; margin: 0 0 22px;">Manage all the events you've booked.</p>
+        <!-- tabs -->
+        <div style="display: flex; gap: 4px; border-bottom: 1px solid #e6e8ef; margin-bottom: 22px;">
+          <sc-for list="{{ regTabs }}" as="t" hint-placeholder-count="3">
+            <div onClick="{{ t.onSelect }}" style="padding: 10px 16px; font-size: 14px; font-weight: 600; color: {{ t.txt }}; border-bottom: 2px solid {{ t.bar }}; cursor: pointer;">{{ t.label }}</div>
+          </sc-for>
+        </div>
+        <!-- list -->
+        <sc-if value="{{ regEmpty }}" hint-placeholder-val="">
+          <div style="background: #fff; border: 1px dashed #d6d9e2; border-radius: 16px; padding: 56px; text-align: center;">
+            <div style="width: 56px; height: 56px; border-radius: 14px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed; margin: 0 auto 14px;"><i data-lucide="calendar-x" style="width:26px;height:26px"></i></div>
+            <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">Nothing here yet</div>
+            <p style="font-size: 14px; color: #98a2b3; margin: 0 0 18px;">You have no events in this category.</p>
+            <button class="eh-btn" onClick="{{ goEvents }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 20px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Browse events</button>
+          </div>
+        </sc-if>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ currentRegs }}" as="r" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 18px; background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 14px; box-shadow: 0 1px 2px rgba(16,24,40,.05);">
+              <div style="width: 84px; height: 64px; border-radius: 11px; background: {{ r.thumb }}; flex-shrink: 0;"></div>
+              <div style="flex: 1;"><div style="font-size: 15px; font-weight: 700; margin-bottom: 5px;">{{ r.title }}</div><div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #667085;"><i data-lucide="calendar" style="width:14px;height:14px"></i> {{ r.date }} · {{ r.location }}</div></div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: {{ r.st.color }}; background: {{ r.st.bg }}; padding: 6px 12px; border-radius: 999px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ r.st.dot }};"></span>{{ r.st.label }}</span>
+              <button class="eh-btn" onClick="{{ r.open }}" style="background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 9px 16px; font-weight: 600; font-size: 13px; font-family: inherit; cursor: pointer;">View details</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== USER PROFILE ===================== -->
+  <sc-if value="{{ isProfile }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #fff; border-right: 1px solid #eceef4; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+        <div onClick="{{ goEvents }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer;"><i data-lucide="compass" style="width:18px;height:18px"></i> Browse events</div>
+        <div onClick="{{ goMyReg }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="ticket-check" style="width:18px;height:18px"></i> My registrations</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: #f4f0ff; color: #6d28d9; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px;"><i data-lucide="user" style="width:18px;height:18px"></i> Profile</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px; max-width: 920px;">
+        <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 22px;">My profile</h1>
+        <div style="background: #fff; border: 1px solid #eceef4; border-radius: 18px; overflow: hidden; box-shadow: 0 1px 2px rgba(16,24,40,.05);">
+          <div style="height: 110px; background: linear-gradient(135deg,#7c3aed,#4f46e5,#a855f7);"></div>
+          <div style="padding: 0 28px 28px;">
+            <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: -42px; margin-bottom: 22px;">
+              <div style="width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 30px; font-weight: 800; box-shadow: 0 6px 16px rgba(16,24,40,.14);">JD</div>
+              <div style="padding-bottom: 6px;"><div style="font-size: 20px; font-weight: 800;">John Doe</div><div style="font-size: 14px; color: #98a2b3;">Attendee · Member since April 2024</div></div>
+              <button class="eh-btn" onClick="{{ toggleEdit }}" style="margin-left: auto; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">{{ editLabel }}</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="eh-grid-2">
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Full name</label><input value="John Doe" readOnly="{{ readOnly }}" style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; background: {{ fieldBg }}; color: #1a1d29;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Email</label><input value="john.doe@example.com" readOnly="{{ readOnly }}" style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; background: {{ fieldBg }}; color: #1a1d29;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Phone</label><input value="+1 123 456 7890" readOnly="{{ readOnly }}" style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; background: {{ fieldBg }}; color: #1a1d29;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Role</label><input value="Attendee" readOnly style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; background: #f3f4f8; color: #98a2b3;"></div>
+              <div style="grid-column: 1 / -1;"><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Bio</label><textarea readOnly="{{ readOnly }}" rows="3" style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; background: {{ fieldBg }}; color: #1a1d29; resize: vertical;">Event enthusiast and lifelong learner. Always looking for the next great conference.</textarea></div>
+            </div>
+            <sc-if value="{{ profileEdit }}" hint-placeholder-val="">
+              <div style="display: flex; gap: 10px; margin-top: 22px;">
+                <button class="eh-btn" onClick="{{ toggleEdit }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Save changes</button>
+                <button class="eh-btn" onClick="{{ toggleEdit }}" style="background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 11px 22px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Cancel</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== ORGANIZER DASHBOARD ===================== -->
+  <sc-if value="{{ isOrg }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #fff; border-right: 1px solid #eceef4; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #b0b4c0; padding: 8px 12px 6px;">Organizer</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: #f4f0ff; color: #6d28d9; font-size: 14px; font-weight: 700; cursor: pointer;"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> My events</div>
+        <div onClick="{{ goForm }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="plus-circle" style="width:18px;height:18px"></i> Create event</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="users" style="width:18px;height:18px"></i> Registrations</div>
+        <div onClick="{{ goProfile }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="user" style="width:18px;height:18px"></i> Profile</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div><h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 4px;">Organizer dashboard</h1><p style="font-size: 14px; color: #98a2b3; margin: 0;">Welcome back — here's how your events are doing.</p></div>
+          <button class="eh-btn" onClick="{{ goForm }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 18px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 16px rgba(124,58,237,.3);"><i data-lucide="plus" style="width:17px;height:17px"></i> Create event</button>
+        </div>
+        <!-- stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px;">
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Total events</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="calendar-days" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">12</div><div style="font-size: 12px; color: #12b76a; font-weight: 600; margin-top: 4px;">+2 this month</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Published</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf3; display: flex; align-items: center; justify-content: center; color: #067647;"><i data-lucide="check-circle-2" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">7</div><div style="font-size: 12px; color: #98a2b3; font-weight: 600; margin-top: 4px;">Live now</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Pending approval</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #fffaeb; display: flex; align-items: center; justify-content: center; color: #b54708;"><i data-lucide="clock" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">3</div><div style="font-size: 12px; color: #b54708; font-weight: 600; margin-top: 4px;">Awaiting review</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Total registrations</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #eff8ff; display: flex; align-items: center; justify-content: center; color: #175cd3;"><i data-lucide="users" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">256</div><div style="font-size: 12px; color: #12b76a; font-weight: 600; margin-top: 4px;">+38 this week</div></div>
+        </div>
+        <!-- recent events -->
+        <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.05); overflow: hidden;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f0f1f5;"><span style="font-size: 16px; font-weight: 700;">Recent events</span><span class="eh-link" style="font-size: 13px; font-weight: 600; color: #7c3aed; cursor: pointer;">View all</span></div>
+          <sc-for list="{{ orgRecent }}" as="r" hint-placeholder-count="4">
+            <div class="eh-row" style="display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-bottom: 1px solid #f5f6f9;">
+              <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); flex-shrink: 0;"></div>
+              <div style="flex: 1;"><div style="font-size: 14px; font-weight: 700;">{{ r.title }}</div><div style="font-size: 13px; color: #98a2b3;">{{ r.date }} · {{ r.location }}</div></div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: {{ r.st.color }}; background: {{ r.st.bg }}; padding: 5px 11px; border-radius: 999px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ r.st.dot }};"></span>{{ r.st.label }}</span>
+              <span class="eh-link" style="font-size: 13px; font-weight: 700; color: #7c3aed; cursor: pointer;">Manage</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== CREATE / EDIT EVENT FORM ===================== -->
+  <sc-if value="{{ isForm }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #fff; border-right: 1px solid #eceef4; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800;">EventHub</span></div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #b0b4c0; padding: 8px 12px 6px;">Organizer</div>
+        <div onClick="{{ goOrg }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer;"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div onClick="{{ goOrg }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> My events</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: #f4f0ff; color: #6d28d9; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px;"><i data-lucide="plus-circle" style="width:18px;height:18px"></i> Create event</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #667085; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px; max-width: 940px;">
+        <div onClick="{{ goOrg }}" class="eh-link" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #667085; cursor: pointer; margin-bottom: 14px;"><i data-lucide="arrow-left" style="width:16px;height:16px"></i> Back to dashboard</div>
+        <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 4px;">Create new event</h1>
+        <p style="font-size: 14px; color: #98a2b3; margin: 0 0 24px;">Fill in the details below. Your event will be sent for admin approval.</p>
+        <div style="background: #fff; border: 1px solid #eceef4; border-radius: 18px; padding: 28px; box-shadow: 0 1px 2px rgba(16,24,40,.05);">
+          <div style="display: grid; gap: 20px;">
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Event title <span style="color:#f04438;">*</span></label><input placeholder="e.g. Tech Conference 2024" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Description <span style="color:#f04438;">*</span></label><textarea rows="4" placeholder="Describe your event..." style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;" class="eh-grid-2">
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Start date &amp; time <span style="color:#f04438;">*</span></label><input type="datetime-local" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; color: #667085;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">End date &amp; time <span style="color:#f04438;">*</span></label><input type="datetime-local" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; color: #667085;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;" class="eh-grid-2">
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Capacity</label><input type="number" placeholder="200" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Price ($) <span style="font-weight:500;color:#98a2b3;">— leave 0 for free</span></label><input type="number" placeholder="99" style="width: 100%; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;" class="eh-grid-2">
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Category <span style="color:#f04438;">*</span></label><div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; color: #98a2b3; cursor: pointer;">Select category <i data-lucide="chevron-down" style="width:16px;height:16px"></i></div></div>
+              <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Venue <span style="color:#f04438;">*</span></label><div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; color: #98a2b3; cursor: pointer;">Select venue <i data-lucide="chevron-down" style="width:16px;height:16px"></i></div></div>
+            </div>
+            <div><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Event image</label>
+              <div style="border: 1.5px dashed #d0d5dd; border-radius: 12px; padding: 28px; text-align: center; background: #fafafe; cursor: pointer;"><div style="width: 44px; height: 44px; border-radius: 11px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed; margin: 0 auto 10px;"><i data-lucide="upload-cloud" style="width:22px;height:22px"></i></div><div style="font-size: 14px; font-weight: 600;">Click to upload <span style="color: #98a2b3; font-weight: 500;">or drag and drop</span></div><div style="font-size: 12px; color: #98a2b3; margin-top: 3px;">PNG, JPG up to 5MB</div></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; padding-top: 22px; border-top: 1px solid #f0f1f5;">
+            <button class="eh-btn" onClick="{{ goOrg }}" style="background: #fff; border: 1px solid #d0d5dd; color: #344054; border-radius: 10px; padding: 11px 22px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer;">Cancel</button>
+            <button class="eh-btn" onClick="{{ goOrg }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 26px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; box-shadow: 0 6px 16px rgba(124,58,237,.3);">Create event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== ADMIN DASHBOARD ===================== -->
+  <sc-if value="{{ isAdmin }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #19162f; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800; color: #fff;">EventHub</span></div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6d6a8f; padding: 8px 12px 6px;">Admin</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 16px rgba(124,58,237,.4);"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="users" style="width:18px;height:18px"></i> Users</div>
+        <div onClick="{{ goManage }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Events</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="tags" style="width:18px;height:18px"></i> Categories</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="map-pin" style="width:18px;height:18px"></i> Venues</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="clipboard-list" style="width:18px;height:18px"></i> Registrations</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"><div><h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 4px;">Admin dashboard</h1><p style="font-size: 14px; color: #98a2b3; margin: 0;">Platform overview &amp; activity.</p></div><div onClick="{{ goProfile }}" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; cursor: pointer;">AD</div></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 26px;">
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Total users</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #eff8ff; display: flex; align-items: center; justify-content: center; color: #175cd3;"><i data-lucide="users" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">342</div><div style="font-size: 12px; color: #12b76a; font-weight: 600; margin-top: 4px;">+12% vs last month</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Total events</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #f4f0ff; display: flex; align-items: center; justify-content: center; color: #7c3aed;"><i data-lucide="calendar-days" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">86</div><div style="font-size: 12px; color: #12b76a; font-weight: 600; margin-top: 4px;">+8 this week</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Pending events</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #fffaeb; display: flex; align-items: center; justify-content: center; color: #b54708;"><i data-lucide="clock" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">14</div><div style="font-size: 12px; color: #b54708; font-weight: 600; margin-top: 4px;">Needs review</div></div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;"><span style="font-size: 13px; color: #667085; font-weight: 500;">Total registrations</span><div style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf3; display: flex; align-items: center; justify-content: center; color: #067647;"><i data-lucide="ticket-check" style="width:18px;height:18px"></i></div></div><div style="font-size: 30px; font-weight: 800;">1,245</div><div style="font-size: 12px; color: #12b76a; font-weight: 600; margin-top: 4px;">+5.2% vs last week</div></div>
+        </div>
+        <div class="eh-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 22px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;"><span style="font-size: 16px; font-weight: 700;">Registrations overview</span><span style="font-size: 12px; color: #98a2b3;">Last 7 days</span></div>{{ lineChart }}</div>
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 22px; box-shadow: 0 1px 2px rgba(16,24,40,.05);"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;"><span style="font-size: 16px; font-weight: 700;">Events overview</span><span style="font-size: 12px; color: #98a2b3;">Last 6 months</span></div>{{ barChart }}</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== ADMIN MANAGE EVENTS ===================== -->
+  <sc-if value="{{ isManage }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #19162f; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800; color: #fff;">EventHub</span></div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6d6a8f; padding: 8px 12px 6px;">Admin</div>
+        <div onClick="{{ goAdmin }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer;"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="users" style="width:18px;height:18px"></i> Users</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; box-shadow: 0 6px 16px rgba(124,58,237,.4);"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Events</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="tags" style="width:18px;height:18px"></i> Categories</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="map-pin" style="width:18px;height:18px"></i> Venues</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;"><div><h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0 0 4px;">Manage events</h1><p style="font-size: 14px; color: #98a2b3; margin: 0;">Review, edit and moderate all platform events.</p></div><button class="eh-btn" onClick="{{ goForm }}" style="background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; border: none; border-radius: 10px; padding: 11px 18px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px;"><i data-lucide="plus" style="width:17px;height:17px"></i> Add event</button></div>
+        <!-- tabs -->
+        <div style="display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap;">
+          <sc-for list="{{ manageTabs }}" as="t" hint-placeholder-count="4">
+            <div onClick="{{ t.onSelect }}" style="padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; color: {{ t.txt }}; background: {{ t.tbg }}; border: 1px solid {{ t.tborder }}; cursor: pointer;">{{ t.label }}</div>
+          </sc-for>
+        </div>
+        <!-- table -->
+        <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.05); overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 2.2fr 1.6fr 1.2fr 1.2fr 0.9fr; padding: 14px 22px; background: #fafafe; border-bottom: 1px solid #f0f1f5; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #98a2b3;"><span>Event title</span><span>Organizer</span><span>Date</span><span>Status</span><span style="text-align: right;">Actions</span></div>
+          <sc-for list="{{ adminRows }}" as="r" hint-placeholder-count="5">
+            <div class="eh-row" style="display: grid; grid-template-columns: 2.2fr 1.6fr 1.2fr 1.2fr 0.9fr; align-items: center; padding: 15px 22px; border-bottom: 1px solid #f5f6f9; font-size: 14px;">
+              <span style="font-weight: 700;">{{ r.title }}</span>
+              <span style="color: #667085;">{{ r.organizer }}</span>
+              <span style="color: #667085;">{{ r.date }}</span>
+              <span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: {{ r.st.color }}; background: {{ r.st.bg }}; padding: 5px 11px; border-radius: 999px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ r.st.dot }};"></span>{{ r.st.label }}</span></span>
+              <span style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; color: #98a2b3;"><i data-lucide="eye" onClick="{{ r.open }}" style="width:17px;height:17px;cursor:pointer"></i><i data-lucide="pencil" style="width:16px;height:16px;cursor:pointer"></i><i data-lucide="trash-2" style="width:16px;height:16px;cursor:pointer"></i></span>
+            </div>
+          </sc-for>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 22px;"><span style="font-size: 13px; color: #98a2b3;">Showing {{ manageCount }} of {{ manageCount }} events</span>
+            <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e6e8ef; display: flex; align-items: center; justify-content: center; color: #98a2b3; cursor: pointer;"><i data-lucide="chevron-left" style="width:15px;height:15px"></i></div><div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">1</div><div style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e6e8ef; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; cursor: pointer;">2</div><div style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e6e8ef; display: flex; align-items: center; justify-content: center; color: #667085; cursor: pointer;"><i data-lucide="chevron-right" style="width:15px;height:15px"></i></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== ADMIN APPROVE / REJECT ===================== -->
+  <sc-if value="{{ isApprove }}" hint-placeholder-val="">
+    <div class="eh-screen" style="min-height: 100vh; background: #f6f7fb; display: flex;">
+      <div class="eh-sidebar" style="width: 248px; background: #19162f; padding: 20px 16px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; position: sticky; top: 0;">
+        <div onClick="{{ goLanding }}" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; cursor: pointer;"><div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; color: #fff;"><i data-lucide="ticket" style="width:18px;height:18px"></i></div><span style="font-size: 18px; font-weight: 800; color: #fff;">EventHub</span></div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6d6a8f; padding: 8px 12px 6px;">Admin</div>
+        <div onClick="{{ goAdmin }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer;"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="users" style="width:18px;height:18px"></i> Users</div>
+        <div onClick="{{ goManage }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; box-shadow: 0 6px 16px rgba(124,58,237,.4);"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Events</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="tags" style="width:18px;height:18px"></i> Categories</div>
+        <div class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;"><i data-lucide="map-pin" style="width:18px;height:18px"></i> Venues</div>
+        <div onClick="{{ goLanding }}" class="eh-side-item" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: #9b97c0; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: auto;"><i data-lucide="log-out" style="width:18px;height:18px"></i> Logout</div>
+      </div>
+
+      <div class="eh-pad" style="flex: 1; padding: 32px 36px; max-width: 1040px;">
+        <div onClick="{{ goManage }}" class="eh-link" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #667085; cursor: pointer; margin-bottom: 14px;"><i data-lucide="arrow-left" style="width:16px;height:16px"></i> Back to events</div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 22px;"><h1 style="font-size: 26px; font-weight: 800; letter-spacing: -.5px; margin: 0;">Event approval</h1><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #b54708; background: #fffaeb; padding: 5px 11px; border-radius: 999px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #f79009;"></span>Pending approval</span></div>
+
+        <div class="eh-split" style="display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start;">
+          <!-- preview -->
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px rgba(16,24,40,.05);">
+            <div style="height: 180px; background: {{ approveEvent.thumb }}; position: relative; display: flex; align-items: flex-end; padding: 18px;"><span style="position: absolute; top: 14px; left: 14px; font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,.7);">[ event banner ]</span><h2 style="color: #fff; font-size: 24px; font-weight: 800; margin: 0;">{{ approveEvent.title }}</h2></div>
+            <div style="padding: 22px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Organizer</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.organizer }}</div></div>
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Category</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.category }}</div></div>
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Date</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.date }}</div></div>
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Location</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.location }}</div></div>
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Capacity</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.capacity }}</div></div>
+                <div><div style="font-size: 12px; color: #98a2b3; margin-bottom: 3px;">Price</div><div style="font-size: 14px; font-weight: 700;">{{ approveEvent.price }}</div></div>
+              </div>
+              <div style="font-size: 12px; color: #98a2b3; margin-bottom: 6px;">Description</div>
+              <p style="font-size: 14px; color: #475467; line-height: 1.7; margin: 0;">Join us for an unforgettable weekend of live performances featuring top artists from around the world. Includes food stalls, art installations and exclusive after-parties. Submitted for review and awaiting admin moderation.</p>
+            </div>
+          </div>
+          <!-- review actions -->
+          <div style="background: #fff; border: 1px solid #eceef4; border-radius: 16px; padding: 22px; box-shadow: 0 8px 28px rgba(16,24,40,.08); position: sticky; top: 32px;">
+            <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 16px;">Review actions</h3>
+            <button class="eh-btn" onClick="{{ approve }}" style="width: 100%; background: #12b76a; color: #fff; border: none; border-radius: 11px; padding: 13px; font-weight: 700; font-size: 14px; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 16px rgba(18,183,106,.3);"><i data-lucide="check" style="width:18px;height:18px"></i> Approve &amp; publish</button>
+            <button class="eh-btn" onClick="{{ reject }}" style="width: 100%; background: #fff; color: #b42318; border: 1px solid #fda29b; border-radius: 11px; padding: 12px; font-weight: 700; font-size: 14px; font-family: inherit; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;"><i data-lucide="x" style="width:18px;height:18px"></i> Reject event</button>
+            <div style="margin-top: 18px;"><label style="display: block; font-size: 13px; font-weight: 600; color: #344054; margin-bottom: 7px;">Notes <span style="font-weight:500;color:#98a2b3;">(optional)</span></label><textarea rows="4" placeholder="Add feedback for the organizer..." style="width: 100%; padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- INSERT-SCREENS-HERE -->
+
+  <!-- ===================== TOAST ===================== -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="">
+    <div style="position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: #1a1d29; color: #fff; padding: 13px 20px; border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,.32); display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; z-index: 9999; animation: eh-toast .3s ease;">
+      <i data-lucide="check-circle-2" style="width:18px;height:18px;color:#34d399"></i> {{ toast }}
+    </div>
+  </sc-if>
+
+  <!-- ===================== FLOATING SCREEN LAUNCHER ===================== -->
+  <sc-if value="{{ notOverview }}" hint-placeholder-val="">
+    <button class="eh-btn" onClick="{{ goOverview }}" style="position: fixed; bottom: 24px; right: 24px; background: #1a1d29; color: #fff; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 600; font-size: 13px; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 28px rgba(16,24,40,.32); z-index: 9000;"><i data-lucide="layout-grid" style="width:17px;height:17px"></i> All screens</button>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'overview',
+    cat: 'All Categories',
+    sort: 'Newest',
+    regTab: 'Upcoming',
+    manageTab: 'All Events',
+    profileEdit: false,
+    selected: null,
+    regRole: 'Attendee',
+    toast: null,
+  };
+
+  events = [
+    { id: 1, title: 'Tech Conference 2024', date: 'May 20, 2024', location: 'New York', price: 99, category: 'Tech', going: '2 Going', seats: '120 / 200', thumb: 'linear-gradient(135deg,#4f6bed,#7c3aed)' },
+    { id: 2, title: 'Summer Music Festival', date: 'June 15, 2024', location: 'Los Angeles', price: 59, category: 'Music', going: '3 Going', seats: '850 / 1000', thumb: 'linear-gradient(135deg,#a855f7,#ec4899)' },
+    { id: 3, title: 'Business Workshop', date: 'May 25, 2024', location: 'Chicago', price: 49, category: 'Business', going: '2 Going', seats: '40 / 60', thumb: 'linear-gradient(135deg,#0ea5e9,#6366f1)' },
+    { id: 4, title: 'Art Exhibition', date: 'June 5, 2024', location: 'New York', price: 'Free', category: 'Art & Culture', going: 'Free', seats: '210 / 300', thumb: 'linear-gradient(135deg,#f59e0b,#ec4899)' },
+    { id: 5, title: 'Sports Tournament', date: 'June 10, 2024', location: 'Houston', price: 30, category: 'Sports', going: 'Going', seats: '320 / 500', thumb: 'linear-gradient(135deg,#10b981,#3b82f6)' },
+    { id: 6, title: 'Photography Workshop', date: 'May 28, 2024', location: 'San Francisco', price: 75, category: 'Art & Culture', going: 'Going', seats: '25 / 40', thumb: 'linear-gradient(135deg,#8b5cf6,#6366f1)' },
+    { id: 7, title: 'Startup Pitch Night', date: 'July 2, 2024', location: 'Austin', price: 25, category: 'Business', going: 'Going', seats: '90 / 150', thumb: 'linear-gradient(135deg,#6366f1,#8b5cf6)' },
+    { id: 8, title: 'Food & Wine Expo', date: 'July 12, 2024', location: 'Seattle', price: 45, category: 'Music', going: 'Going', seats: '400 / 600', thumb: 'linear-gradient(135deg,#ef4444,#f59e0b)' },
+  ];
+
+  categories = [
+    { name: 'Music', count: 12, icon: 'music', thumb: 'linear-gradient(135deg,#a855f7,#ec4899)' },
+    { name: 'Tech', count: 8, icon: 'cpu', thumb: 'linear-gradient(135deg,#4f6bed,#7c3aed)' },
+    { name: 'Business', count: 15, icon: 'briefcase', thumb: 'linear-gradient(135deg,#0ea5e9,#6366f1)' },
+    { name: 'Sports', count: 9, icon: 'trophy', thumb: 'linear-gradient(135deg,#10b981,#3b82f6)' },
+    { name: 'Art & Culture', count: 7, icon: 'palette', thumb: 'linear-gradient(135deg,#f59e0b,#ec4899)' },
+  ];
+
+  STATUS = {
+    Published:      { label: 'Published',       bg: '#ecfdf3', color: '#067647', dot: '#12b76a' },
+    PendingApproval:{ label: 'Pending Approval',bg: '#fffaeb', color: '#b54708', dot: '#f79009' },
+    Rejected:       { label: 'Rejected',        bg: '#fef3f2', color: '#b42318', dot: '#f04438' },
+    Cancelled:      { label: 'Cancelled',       bg: '#f2f4f7', color: '#475467', dot: '#98a2b3' },
+    Draft:          { label: 'Draft',           bg: '#f4f3ff', color: '#5925dc', dot: '#7a5af8' },
+    Confirmed:      { label: 'Confirmed',       bg: '#ecfdf3', color: '#067647', dot: '#12b76a' },
+    Registered:     { label: 'Registered',      bg: '#eff8ff', color: '#175cd3', dot: '#2e90fa' },
+  };
+
+  adminRows = [
+    { title: 'Tech Conference 2024', organizer: 'Tech Events Inc.', date: 'May 20, 2024', status: 'Published' },
+    { title: 'Summer Music Festival', organizer: 'Music World', date: 'June 15, 2024', status: 'PendingApproval' },
+    { title: 'Business Workshop', organizer: 'Business Corp', date: 'May 25, 2024', status: 'Published' },
+    { title: 'Art Exhibition', organizer: 'Art World', date: 'June 5, 2024', status: 'PendingApproval' },
+    { title: 'Sports Tournament', organizer: 'Sports Club', date: 'June 10, 2024', status: 'Cancelled' },
+    { title: 'Startup Pitch Night', organizer: 'Founders Hub', date: 'July 2, 2024', status: 'Published' },
+  ];
+
+  orgRecent = [
+    { title: 'Tech Conference 2024', date: 'May 20, 2024', location: 'New York', status: 'Published' },
+    { title: 'Summer Music Festival', date: 'June 15, 2024', location: 'Chicago', status: 'PendingApproval' },
+    { title: 'Business Workshop', date: 'May 25, 2024', location: 'Chicago', status: 'Published' },
+    { title: 'Photography Workshop', date: 'May 28, 2024', location: 'San Francisco', status: 'Draft' },
+  ];
+
+  regs = [
+    { evId: 1, status: 'Confirmed', tab: 'Upcoming' },
+    { evId: 3, status: 'Confirmed', tab: 'Upcoming' },
+    { evId: 4, status: 'Confirmed', tab: 'Upcoming' },
+    { evId: 8, status: 'Confirmed', tab: 'Past' },
+    { evId: 2, status: 'Confirmed', tab: 'Past' },
+    { evId: 6, status: 'Cancelled', tab: 'Cancelled' },
+  ];
+
+  componentDidMount() {
+    this._icons();
+    window.__ehGo = (scr, ex) => this.go(scr, ex || {});
+    try {
+      const p = new URLSearchParams(location.search);
+      const scr = p.get('screen');
+      const patch = {};
+      if (scr) patch.screen = scr;
+      if (p.get('embed')) patch.embed = true;
+      if (Object.keys(patch).length) this.setState(patch);
+    } catch (e) {}
+  }
+  componentDidUpdate() { this._icons(); }
+  _icons() { try { if (window.lucide) window.lucide.createIcons(); } catch (e) {} }
+
+  go(screen, ex = {}) {
+    this.setState({ screen, ...ex });
+    requestAnimationFrame(() => { try { window.scrollTo(0, 0); } catch (e) {} });
+  }
+  openEvent(ev) { this.go('eventDetails', { selected: ev }); }
+  openApprove(row) { this.go('adminApprove', { selected: row }); }
+  showToast(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: null }), 2400);
+  }
+  registerEvent() { this.go('myRegistrations', { regTab: 'Upcoming' }); this.showToast('You\u2019re registered! Ticket sent to your email.'); }
+  approve() { this.go('adminManageEvents'); this.showToast('Event approved & published.'); }
+  reject() { this.go('adminManageEvents'); this.showToast('Event rejected.'); }
+
+  fmtPrice(p) { return p === 'Free' ? 'Free' : '$' + p; }
+
+  renderVals() {
+    const s = this.state, self = this;
+    const go = (scr, ex) => () => self.go(scr, ex);
+    const ST = this.STATUS;
+
+    const events = this.events.map(e => ({
+      ...e, priceLabel: this.fmtPrice(e.price), open: () => self.openEvent(e),
+    }));
+    const byId = id => events.find(e => e.id === id);
+    const filteredEvents = events.filter(e => s.cat === 'All Categories' || e.category === s.cat);
+
+    const categories = this.categories.map(c => ({ ...c, countLabel: c.count + ' Events' }));
+
+    const catFilters = ['All Categories', 'Music', 'Tech', 'Business', 'Sports', 'Art & Culture'].map(c => {
+      const active = s.cat === c;
+      return {
+        label: c, active, onSelect: () => self.setState({ cat: c }),
+        bg: active ? '#f7f5ff' : 'transparent',
+        ring: active ? '#7c3aed' : '#d0d5dd',
+        fill: active ? '#7c3aed' : 'transparent',
+        txt: active ? '#6d28d9' : '#475467',
+      };
+    });
+
+    const regTabs = ['Upcoming', 'Past', 'Cancelled'].map(t => {
+      const active = s.regTab === t;
+      return {
+        label: t, active, onSelect: () => self.setState({ regTab: t }),
+        txt: active ? '#7c3aed' : '#98a2b3',
+        bar: active ? '#7c3aed' : 'transparent',
+      };
+    });
+    const currentRegs = this.regs.filter(r => r.tab === s.regTab).map(r => {
+      const ev = byId(r.evId); const st = ST[r.status];
+      return { ...ev, st, open: () => self.openEvent(ev) };
+    });
+
+    const manageTabs = ['All Events', 'Pending Approval', 'Published', 'Cancelled'].map(t => {
+      const active = s.manageTab === t;
+      return {
+        label: t, active, onSelect: () => self.setState({ manageTab: t }),
+        txt: active ? '#7c3aed' : '#667085',
+        tbg: active ? '#f7f5ff' : 'transparent',
+        tborder: active ? '#e3dcff' : 'transparent',
+      };
+    });
+    const adminRows = this.adminRows
+      .filter(r => {
+        if (s.manageTab === 'All Events') return true;
+        if (s.manageTab === 'Pending Approval') return r.status === 'PendingApproval';
+        if (s.manageTab === 'Published') return r.status === 'Published';
+        if (s.manageTab === 'Cancelled') return r.status === 'Cancelled';
+        return true;
+      })
+      .map(r => ({ ...r, st: ST[r.status], open: () => self.openApprove(r) }));
+
+    const orgRecent = this.orgRecent.map(r => ({ ...r, st: ST[r.status] }));
+
+    const overviewGroups = [
+      { title: 'Public', items: [
+        { n: '01', id: 'landing', title: 'Landing / Home', role: 'Public', desc: 'Hero, search, categories and featured events.', thumb: 'linear-gradient(135deg,#7c3aed,#4f46e5)' },
+        { n: '02', id: 'login', title: 'Login', role: 'Public', desc: 'Split-screen sign-in with brand panel.', thumb: 'linear-gradient(135deg,#4f46e5,#7c3aed)' },
+        { n: '03', id: 'register', title: 'Register', role: 'Public', desc: 'Create account with role selection.', thumb: 'linear-gradient(135deg,#7c3aed,#a855f7)' },
+      ]},
+      { title: 'Attendee', items: [
+        { n: '04', id: 'events', title: 'Events Listing', role: 'Attendee', desc: 'Filterable, sortable grid of all events.', thumb: 'linear-gradient(135deg,#6366f1,#8b5cf6)' },
+        { n: '05', id: 'eventDetails', title: 'Event Details', role: 'Attendee', desc: 'Full event info, agenda and registration.', thumb: 'linear-gradient(135deg,#4f6bed,#7c3aed)' },
+        { n: '06', id: 'myRegistrations', title: 'My Registrations', role: 'Attendee', desc: 'Upcoming, past & cancelled bookings.', thumb: 'linear-gradient(135deg,#0ea5e9,#6366f1)' },
+        { n: '12', id: 'profile', title: 'User Profile', role: 'Attendee', desc: 'Account details with inline editing.', thumb: 'linear-gradient(135deg,#8b5cf6,#6366f1)' },
+      ]},
+      { title: 'Organizer', items: [
+        { n: '07', id: 'organizerDashboard', title: 'Organizer Dashboard', role: 'Organizer', desc: 'Stats, recent events and quick actions.', thumb: 'linear-gradient(135deg,#7c3aed,#4f46e5)' },
+        { n: '08', id: 'eventForm', title: 'Create / Edit Event', role: 'Organizer', desc: 'Full event form with validation states.', thumb: 'linear-gradient(135deg,#a855f7,#7c3aed)' },
+      ]},
+      { title: 'Admin', items: [
+        { n: '09', id: 'adminDashboard', title: 'Admin Dashboard', role: 'Admin', desc: 'Platform KPIs with overview charts.', thumb: 'linear-gradient(135deg,#1e1b4b,#4f46e5)' },
+        { n: '10', id: 'adminManageEvents', title: 'Manage Events', role: 'Admin', desc: 'Master table with status filters.', thumb: 'linear-gradient(135deg,#312e81,#6366f1)' },
+        { n: '11', id: 'adminApprove', title: 'Approve / Reject', role: 'Admin', desc: 'Moderation view with approve actions.', thumb: 'linear-gradient(135deg,#4f46e5,#7c3aed)' },
+      ]},
+    ].map(g => ({ ...g, items: g.items.map(it => ({ ...it, open: go(it.id) })) }));
+
+    const selected = s.selected || events[0];
+    const approveEvent = {
+      title: selected.title || 'Summer Music Festival',
+      organizer: selected.organizer || 'Music World',
+      date: selected.date || 'June 15, 2024',
+      location: selected.location || 'Los Angeles Memorial Coliseum, LA',
+      thumb: selected.thumb || 'linear-gradient(135deg,#a855f7,#ec4899)',
+      category: selected.category || 'Music',
+      price: selected.priceLabel || (selected.price != null ? this.fmtPrice(selected.price) : '$59'),
+      capacity: selected.seats || '5,000 capacity',
+    };
+
+    return {
+      isOverview: s.screen === 'overview',
+      isLanding: s.screen === 'landing',
+      isLogin: s.screen === 'login',
+      isRegister: s.screen === 'register',
+      isEvents: s.screen === 'events',
+      isEventDetails: s.screen === 'eventDetails',
+      isMyReg: s.screen === 'myRegistrations',
+      isProfile: s.screen === 'profile',
+      isOrg: s.screen === 'organizerDashboard',
+      isForm: s.screen === 'eventForm',
+      isAdmin: s.screen === 'adminDashboard',
+      isManage: s.screen === 'adminManageEvents',
+      isApprove: s.screen === 'adminApprove',
+      notOverview: s.screen !== 'overview' && !s.embed,
+
+      overviewGroups, categories, events, filteredEvents,
+      popularEvents: events.slice(0, 4),
+      eventsCount: filteredEvents.length,
+      catFilters, sort: s.sort,
+      regTabs, currentRegs, regTab: s.regTab,
+      regEmpty: currentRegs.length === 0,
+      manageTabs, adminRows, manageTab: s.manageTab, manageCount: adminRows.length,
+      orgRecent, selected, approveEvent,
+      profileEdit: s.profileEdit,
+      editLabel: s.profileEdit ? 'Cancel' : 'Edit profile',
+      readOnly: !s.profileEdit,
+      fieldBg: s.profileEdit ? '#fff' : '#f9fafc',
+      toast: s.toast,
+      lineChart: this._lineChart(),
+      barChart: this._barChart(),
+
+      goLanding: go('landing'), goLogin: go('login'), goRegister: go('register'),
+      goEvents: go('events'), goOverview: go('overview'),
+      goMyReg: go('myRegistrations'), goProfile: go('profile'),
+      goOrg: go('organizerDashboard'), goForm: go('eventForm'),
+      goAdmin: go('adminDashboard'), goManage: go('adminManageEvents'),
+      registerEvent: () => self.registerEvent(),
+      approve: () => self.approve(), reject: () => self.reject(),
+      toggleEdit: () => self.setState(p => ({ profileEdit: !p.profileEdit })),
+      pickAttendee: () => self.setState({ regRole: 'Attendee' }),
+      pickOrganizer: () => self.setState({ regRole: 'Organizer' }),
+      attendeeBorder: s.regRole === 'Attendee' ? '#7c3aed' : '#e6e8ef',
+      attendeeBg: s.regRole === 'Attendee' ? '#f7f5ff' : '#fff',
+      organizerBorder: s.regRole === 'Organizer' ? '#7c3aed' : '#e6e8ef',
+      organizerBg: s.regRole === 'Organizer' ? '#f7f5ff' : '#fff',
+    };
+  }
+
+  _lineChart() {
+    const h = React.createElement;
+    const pts = [28, 22, 40, 34, 52, 46, 64];
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const W = 460, H = 180, pad = 10, max = 70;
+    const x = i => pad + i * ((W - pad * 2) / (pts.length - 1));
+    const y = v => H - 24 - (v / max) * (H - 44);
+    const line = pts.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+    const area = line + ` L${x(pts.length - 1).toFixed(1)} ${H - 24} L${x(0).toFixed(1)} ${H - 24} Z`;
+    return h('svg', { viewBox: `0 0 ${W} ${H}`, style: { width: '100%', height: 'auto', display: 'block' } },
+      h('defs', null, h('linearGradient', { id: 'lg', x1: 0, y1: 0, x2: 0, y2: 1 },
+        h('stop', { offset: 0, stopColor: '#7c3aed', stopOpacity: .22 }),
+        h('stop', { offset: 1, stopColor: '#7c3aed', stopOpacity: 0 }))),
+      [0, 1, 2, 3].map(i => h('line', { key: i, x1: pad, x2: W - pad, y1: 24 + i * 36, y2: 24 + i * 36, stroke: '#eef0f5', strokeWidth: 1 })),
+      h('path', { d: area, fill: 'url(#lg)' }),
+      h('path', { d: line, fill: 'none', stroke: '#7c3aed', strokeWidth: 3, strokeLinecap: 'round', strokeLinejoin: 'round' }),
+      pts.map((v, i) => h('circle', { key: 'c' + i, cx: x(i), cy: y(v), r: 4, fill: '#fff', stroke: '#7c3aed', strokeWidth: 2.5 })),
+      labels.map((l, i) => h('text', { key: 't' + i, x: x(i), y: H - 6, textAnchor: 'middle', fontSize: 11, fill: '#98a2b3', fontFamily: 'Plus Jakarta Sans' }, l)));
+  }
+
+  _barChart() {
+    const h = React.createElement;
+    const vals = [40, 58, 34, 70, 50, 62];
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const W = 460, H = 180, max = 80, bw = 36;
+    const gap = (W - vals.length * bw) / (vals.length + 1);
+    const y = v => H - 24 - (v / max) * (H - 44);
+    return h('svg', { viewBox: `0 0 ${W} ${H}`, style: { width: '100%', height: 'auto', display: 'block' } },
+      h('defs', null, h('linearGradient', { id: 'bg', x1: 0, y1: 0, x2: 0, y2: 1 },
+        h('stop', { offset: 0, stopColor: '#8b5cf6' }), h('stop', { offset: 1, stopColor: '#6366f1' }))),
+      [0, 1, 2, 3].map(i => h('line', { key: i, x1: 0, x2: W, y1: 24 + i * 36, y2: 24 + i * 36, stroke: '#eef0f5', strokeWidth: 1 })),
+      vals.map((v, i) => {
+        const xx = gap + i * (bw + gap);
+        return h('g', { key: i },
+          h('rect', { x: xx, y: y(v), width: bw, height: (H - 24) - y(v), rx: 7, fill: 'url(#bg)' }),
+          h('text', { x: xx + bw / 2, y: H - 6, textAnchor: 'middle', fontSize: 11, fill: '#98a2b3', fontFamily: 'Plus Jakarta Sans' }, labels[i]));
+      }));
+  }
+}
+</script>
+<script>
+(async () => {
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  @page { margin: 0.5cm; }\n  html, body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }\n  section, article, figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>

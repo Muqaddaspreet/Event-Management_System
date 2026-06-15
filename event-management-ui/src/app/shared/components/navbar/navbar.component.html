@@ -1,0 +1,67 @@
+<nav class="eh-navbar">
+  <div class="eh-navbar__inner">
+
+    <!-- Brand -->
+    <a class="eh-navbar__brand" routerLink="/events">
+      <span class="eh-navbar__logo-mark"></span>
+      <span class="eh-navbar__brand-name">EventHub</span>
+    </a>
+
+    <!-- Primary nav links -->
+    <ul class="eh-navbar__nav">
+      <li>
+        <a class="eh-navbar__link"
+           routerLink="/events"
+           routerLinkActive="eh-navbar__link--active"
+           [routerLinkActiveOptions]="{ exact: false }">
+          Events
+        </a>
+      </li>
+
+      @if (isLoggedIn() && currentRole() === 'Organizer') {
+        <li>
+          <a class="eh-navbar__link"
+             routerLink="/my-events"
+             routerLinkActive="eh-navbar__link--active">
+            My Events
+          </a>
+        </li>
+      }
+
+      @if (isLoggedIn() && currentRole() === 'Attendee') {
+        <li>
+          <a class="eh-navbar__link"
+             routerLink="/my-registrations"
+             routerLinkActive="eh-navbar__link--active">
+            My Registrations
+          </a>
+        </li>
+      }
+
+      @if (isLoggedIn() && currentRole() === 'Admin') {
+        <li>
+          <a class="eh-navbar__link"
+             routerLink="/admin"
+             routerLinkActive="eh-navbar__link--active">
+            Admin
+          </a>
+        </li>
+      }
+    </ul>
+
+    <!-- Right actions -->
+    <div class="eh-navbar__actions">
+      @if (!isLoggedIn()) {
+        <a routerLink="/login"    class="btn btn--secondary btn--sm">Login</a>
+        <a routerLink="/register" class="btn btn--primary btn--sm">Register</a>
+      } @else {
+        <div class="eh-navbar__user">
+          <span class="eh-navbar__user-name">{{ currentUser()?.fullName }}</span>
+          <span class="eh-navbar__user-role">{{ currentUser()?.role }}</span>
+        </div>
+        <button class="btn btn--secondary btn--sm" (click)="logout()">Logout</button>
+      }
+    </div>
+
+  </div>
+</nav>
