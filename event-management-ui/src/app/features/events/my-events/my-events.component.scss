@@ -1,0 +1,309 @@
+.me-page {
+  min-height: calc(100vh - 64px);
+  background: var(--eh-bg);
+  padding: 40px 0;
+}
+
+.me-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.me-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.me-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--eh-text);
+  letter-spacing: -0.5px;
+  margin: 0 0 4px;
+}
+
+.me-subtitle {
+  font-size: 14px;
+  color: var(--eh-text-3);
+  margin: 0;
+}
+
+/* ── Stat cards ───────────────────────────────────────────────────────────── */
+.me-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.me-stat-card {
+  padding: 20px 22px;
+}
+
+.me-stat-icon {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  &--total     { background: var(--eh-primary-tint); }
+  &--published { background: var(--eh-green-bg); }
+  &--pending   { background: var(--eh-amber-bg); }
+  &--cancelled { background: var(--eh-gray-bg); }
+}
+
+.me-stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--eh-text);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+
+  &--green { color: var(--eh-green); }
+  &--amber { color: var(--eh-amber); }
+  &--gray  { color: var(--eh-gray); }
+}
+
+.me-stat-label {
+  font-size: 13px;
+  color: var(--eh-text-3);
+  font-weight: 500;
+}
+
+/* ── Events table card ────────────────────────────────────────────────────── */
+.me-card {
+  overflow: hidden;
+}
+
+.me-table-head {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--eh-divider);
+  font-size: 13px;
+  color: var(--eh-text-3);
+  font-weight: 600;
+}
+
+/* Shared 7-column grid — header and every data row use the same template */
+.me-table-cols {
+  display: grid;
+  grid-template-columns:
+    1.8fr     /* Event */
+    0.9fr     /* Date */
+    0.75fr    /* Category */
+    1.1fr     /* Venue */
+    70px      /* Capacity */
+    140px     /* Status */
+    220px;    /* Actions */
+  gap: 12px;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* ── Header row ───────────────────────────────────────────────────────────── */
+.me-table-row--header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #fafafe;
+  border-bottom: 1px solid var(--eh-border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--eh-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  span                { text-align: center; }
+  span:first-child    { text-align: left; }
+}
+
+/* ── Data rows ────────────────────────────────────────────────────────────── */
+.me-table-row {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--eh-divider);
+  font-size: 14px;
+  color: var(--eh-text-2);
+  transition: background .12s;
+
+  &:last-of-type { border-bottom: none; }
+  &:hover { background: #fafafe; }
+
+  /* Center all cells under their heading */
+  > * { justify-self: center; text-align: center; }
+
+  /* First child (Event column) stays left-aligned and fills its column */
+  > *:first-child { justify-self: stretch; text-align: left; }
+}
+
+/* ── Cell components ──────────────────────────────────────────────────────── */
+.me-event-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+.me-event-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--eh-gradient);
+  flex-shrink: 0;
+}
+
+.me-event-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--eh-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  text-align: center;
+}
+
+.me-cell-sub {
+  font-size: 12px;
+  color: var(--eh-text-3);
+}
+
+.me-cell-text {
+  font-size: 14px;
+  color: var(--eh-text-2);
+}
+
+.me-col-actions { text-align: center; }
+
+/* Status badge: centered within its 140px column */
+.status-badge {
+  min-width: 130px;
+  justify-content: center;
+}
+
+.me-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* Slightly compact buttons inside the table to keep 3 buttons in 220px */
+.me-actions .btn {
+  padding: 7px 13px;
+  font-size: 13px;
+}
+
+.me-row-error {
+  padding: 6px 20px 10px;
+  font-size: 12px;
+  color: var(--eh-red);
+  border-bottom: 1px solid var(--eh-divider);
+}
+
+/* ── Empty / error states ─────────────────────────────────────────────────── */
+.me-state {
+  text-align: center;
+  padding: 72px 24px;
+
+  &__icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--eh-text);
+    margin: 0 0 10px;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--eh-text-3);
+    margin: 0 0 24px;
+  }
+}
+
+/* ── Skeleton ─────────────────────────────────────────────────────────────── */
+.me-skeleton-block {
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--eh-border) 25%, var(--eh-divider) 50%, var(--eh-border) 75%);
+  background-size: 200% 100%;
+  animation: me-shimmer 1.4s ease infinite;
+}
+
+.me-skeleton-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--eh-divider);
+  flex-wrap: wrap;
+}
+
+@keyframes me-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 1040px) {
+  .me-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .me-table-cols {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px 16px;
+  }
+
+  .me-table-row--header { display: none; }
+
+  .me-event-title-cell { margin-bottom: 4px; }
+
+  /* Reset centering — stacked mobile layout is left-aligned */
+  .me-table-row {
+    > * { justify-self: stretch; text-align: left; }
+  }
+
+  .me-cell-stack {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .me-actions {
+    justify-content: flex-start;
+    padding-top: 6px;
+  }
+}
+
+@media (max-width: 640px) {
+  .me-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .me-header { flex-direction: column; align-items: stretch; }
+  .me-header .btn { width: 100%; justify-content: center; }
+}

@@ -1,4 +1,206 @@
-<div>
-  <h2>Event Form</h2>
-  <p>Create / edit event — placeholder</p>
+<div class="ef-page">
+  <div class="ef-container">
+
+    <!-- Page header -->
+    <div class="ef-header">
+      <a routerLink="/my-events" class="ef-back-link">‹ Back to My Events</a>
+      <h1 class="ef-title">{{ isEditMode ? 'Edit Event' : 'Create New Event' }}</h1>
+      <p class="ef-subtitle">
+        {{ isEditMode
+          ? 'Update your event details below.'
+          : 'Fill in the details below. Your event will be submitted for admin approval.' }}
+      </p>
+    </div>
+
+    <!-- Loading state -->
+    @if (loadingData()) {
+      <div class="ef-card card">
+        <div class="ef-skeleton-block" style="height:28px;width:40%;margin-bottom:24px"></div>
+        <div class="ef-form-grid">
+          @for (item of [1,2,3,4,5,6]; track item) {
+            <div>
+              <div class="ef-skeleton-block" style="height:13px;width:35%;margin-bottom:8px"></div>
+              <div class="ef-skeleton-block" style="height:44px"></div>
+            </div>
+          }
+        </div>
+        <div class="ef-skeleton-block" style="height:13px;width:25%;margin-bottom:8px;margin-top:4px"></div>
+        <div class="ef-skeleton-block" style="height:120px;margin-bottom:28px"></div>
+        <div class="ef-skeleton-block" style="height:44px;width:180px;border-radius:10px;margin-left:auto"></div>
+      </div>
+    }
+
+    <!-- Load error -->
+    @else if (loadError()) {
+      <div class="ef-state">
+        <div class="ef-state__icon">⚠️</div>
+        <h2>Failed to Load</h2>
+        <p>We couldn't load the required data. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retryLoad()">Retry</button>
+      </div>
+    }
+
+    <!-- Success state -->
+    @else if (submitSuccess()) {
+      <div class="ef-state">
+        <div class="ef-state__icon">🎉</div>
+        <h2>{{ isEditMode ? 'Event Updated!' : 'Event Created!' }}</h2>
+        <p>
+          {{ isEditMode
+            ? 'Your changes have been saved.'
+            : 'Your event has been submitted for admin approval.' }}
+          Redirecting to My Events…
+        </p>
+      </div>
+    }
+
+    <!-- Form -->
+    @else {
+      <form class="ef-card card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Section: Basic info -->
+        <h2 class="ef-section-title">Event Details</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="ef-title">
+            Title <span class="form-required">*</span>
+          </label>
+          <input id="ef-title"
+                 class="form-control"
+                 [class.form-control--error]="title.invalid && title.touched"
+                 type="text"
+                 placeholder="Give your event a clear, descriptive title"
+                 formControlName="title"
+                 maxlength="200">
+          @if (title.invalid && title.touched) {
+            @if (title.errors?.['required']) {
+              <span class="form-error">Title is required.</span>
+            } @else if (title.errors?.['maxlength']) {
+              <span class="form-error">Title must be 200 characters or fewer.</span>
+            }
+          }
+        </div>
+
+        <!-- Date + Capacity row -->
+        <div class="ef-form-grid">
+
+          <div class="form-group">
+            <label class="form-label" for="ef-start">
+              Start Date & Time <span class="form-required">*</span>
+            </label>
+            <input id="ef-start"
+                   class="form-control"
+                   [class.form-control--error]="startTime.invalid && startTime.touched"
+                   type="datetime-local"
+                   formControlName="startTime">
+            @if (startTime.invalid && startTime.touched) {
+              <span class="form-error">Start date and time is required.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ef-end">
+              End Date & Time <span class="form-required">*</span>
+            </label>
+            <input id="ef-end"
+                   class="form-control"
+                   [class.form-control--error]="endTime.invalid && endTime.touched"
+                   type="datetime-local"
+                   formControlName="endTime">
+            @if (endTime.invalid && endTime.touched) {
+              @if (endTime.errors?.['required']) {
+                <span class="form-error">End date and time is required.</span>
+              } @else if (endTime.errors?.['endBeforeStart']) {
+                <span class="form-error">End time must be after start time.</span>
+              }
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ef-capacity">
+              Capacity <span class="form-required">*</span>
+            </label>
+            <input id="ef-capacity"
+                   class="form-control"
+                   [class.form-control--error]="capacity.invalid && capacity.touched"
+                   type="number"
+                   min="1"
+                   placeholder="Max attendees"
+                   formControlName="capacity">
+            @if (capacity.invalid && capacity.touched) {
+              @if (capacity.errors?.['required']) {
+                <span class="form-error">Capacity is required.</span>
+              } @else if (capacity.errors?.['min']) {
+                <span class="form-error">Capacity must be at least 1.</span>
+              }
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ef-category">
+              Category <span class="form-required">*</span>
+            </label>
+            <select id="ef-category"
+                    class="form-control"
+                    [class.form-control--error]="categoryId.invalid && categoryId.touched"
+                    formControlName="categoryId">
+              <option [ngValue]="null" disabled>Select a category</option>
+              @for (cat of categories(); track cat.id) {
+                <option [ngValue]="cat.id">{{ cat.name }}</option>
+              }
+            </select>
+            @if (categoryId.invalid && categoryId.touched) {
+              <span class="form-error">Category is required.</span>
+            }
+          </div>
+
+          <div class="form-group ef-form-grid--full">
+            <label class="form-label" for="ef-venue">
+              Venue <span class="form-required">*</span>
+            </label>
+            <select id="ef-venue"
+                    class="form-control"
+                    [class.form-control--error]="venueId.invalid && venueId.touched"
+                    formControlName="venueId">
+              <option [ngValue]="null" disabled>Select a venue</option>
+              @for (v of venues(); track v.id) {
+                <option [ngValue]="v.id">{{ v.name }} — {{ v.city }}</option>
+              }
+            </select>
+            @if (venueId.invalid && venueId.touched) {
+              <span class="form-error">Venue is required.</span>
+            }
+          </div>
+
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="ef-desc">Description</label>
+          <textarea id="ef-desc"
+                    class="form-control ef-textarea"
+                    placeholder="Describe your event — what attendees can expect, the agenda, speakers, etc."
+                    formControlName="description"
+                    rows="5"></textarea>
+        </div>
+
+        <!-- Submit error -->
+        @if (submitError()) {
+          <div class="ef-submit-error">{{ submitError() }}</div>
+        }
+
+        <!-- Footer actions -->
+        <div class="ef-footer">
+          <a routerLink="/my-events" class="btn btn--secondary">Cancel</a>
+          <button class="btn btn--primary" type="submit" [disabled]="submitting()">
+            {{ submitting()
+              ? (isEditMode ? 'Saving…' : 'Creating…')
+              : (isEditMode ? 'Save Changes' : 'Create Event') }}
+          </button>
+        </div>
+
+      </form>
+    }
+
+  </div>
 </div>
