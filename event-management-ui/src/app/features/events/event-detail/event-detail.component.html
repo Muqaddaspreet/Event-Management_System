@@ -165,20 +165,31 @@
                 </div>
               </div>
 
-              <!-- Registration CTA — M3 placeholder, full flow in M4 -->
+              <!-- Registration CTA -->
               @if (!isLoggedIn()) {
                 <a routerLink="/login" class="btn btn--primary btn--full">
                   Sign In to Register
                 </a>
                 <p class="ed-action-note">Create a free account to attend this event.</p>
               } @else if (currentRole() === 'Attendee') {
-                <button class="btn btn--primary btn--full" disabled>
-                  Register for Event
-                </button>
-                <p class="ed-action-note">Registration coming in the next update.</p>
+                @if (registerSuccess()) {
+                  <div class="ed-register-success">
+                    ✅ Registered! Redirecting to your registrations…
+                  </div>
+                } @else {
+                  <button class="btn btn--primary btn--full"
+                          type="button"
+                          [disabled]="registering()"
+                          (click)="registerForEvent()">
+                    {{ registering() ? 'Registering…' : 'Register for Event' }}
+                  </button>
+                  @if (registerError()) {
+                    <p class="ed-action-error">{{ registerError() }}</p>
+                  }
+                }
               } @else {
                 <div class="ed-action-info">
-                  You are viewing as <strong>{{ currentRole() }}</strong>.
+                  Only attendees can register for events.
                 </div>
               }
 

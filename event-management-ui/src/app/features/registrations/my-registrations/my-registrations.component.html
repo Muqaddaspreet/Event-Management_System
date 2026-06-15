@@ -1,4 +1,116 @@
-<div>
-  <h2>My Registrations</h2>
-  <p>Attendee registrations — placeholder</p>
+<div class="mr-page">
+  <div class="mr-container">
+
+    <!-- Page header -->
+    <div class="mr-header">
+      <h1 class="mr-title">My Registered Events</h1>
+      <a routerLink="/events" class="btn btn--secondary">Browse More Events</a>
+    </div>
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <div class="mr-skeleton-list">
+        @for (item of [1, 2, 3]; track item) {
+          <div class="mr-skeleton-row">
+            <div class="mr-skeleton-thumb"></div>
+            <div class="mr-skeleton-lines">
+              <div class="mr-skeleton-block" style="width:60%;height:18px;margin-bottom:10px"></div>
+              <div class="mr-skeleton-block" style="width:40%;height:13px;margin-bottom:8px"></div>
+              <div class="mr-skeleton-block" style="width:25%;height:13px"></div>
+            </div>
+            <div class="mr-skeleton-block" style="width:80px;height:34px;border-radius:10px;flex-shrink:0"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="mr-state">
+        <div class="mr-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load your registrations. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    @else {
+      <!-- Tabs -->
+      <div class="mr-tabs">
+        @for (tab of tabs; track tab) {
+          <button class="mr-tab"
+                  [class.mr-tab--active]="activeTab() === tab"
+                  type="button"
+                  (click)="setTab(tab)">
+            {{ tab }}
+            <span class="mr-tab__badge">{{ tabCount(tab) }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Empty state -->
+      @if (filtered().length === 0) {
+        <div class="mr-state">
+          <div class="mr-state__icon">🎟️</div>
+          @if (activeTab() === 'All') {
+            <h2>No registrations yet</h2>
+            <p>You haven't registered for any events. Start exploring!</p>
+            <a routerLink="/events" class="btn btn--primary">Browse Events</a>
+          } @else if (activeTab() === 'Registered') {
+            <h2>No active registrations</h2>
+            <p>You don't have any active registrations right now.</p>
+            <a routerLink="/events" class="btn btn--primary">Browse Events</a>
+          } @else {
+            <h2>No cancelled registrations</h2>
+            <p>You haven't cancelled any registrations.</p>
+          }
+        </div>
+      }
+
+      <!-- Registration list -->
+      @else {
+        <div class="mr-list">
+          @for (reg of filtered(); track reg.id) {
+            <div class="mr-row card">
+
+              <div class="mr-row__thumb"></div>
+
+              <div class="mr-row__body">
+                <div class="mr-row__top">
+                  <h3 class="mr-row__title">{{ reg.eventTitle }}</h3>
+                  <span class="mr-badge mr-badge--{{ reg.status.toLowerCase() }}">
+                    <span class="mr-badge__dot"></span>
+                    {{ reg.status }}
+                  </span>
+                </div>
+                <div class="mr-row__meta">
+                  <span>📅 {{ formatDate(reg.eventStartTime) }} · {{ formatTime(reg.eventStartTime) }}</span>
+                  <span class="mr-row__reg-date">Registered {{ formatDate(reg.registeredAt) }}</span>
+                </div>
+                @if (getCancelError(reg.id)) {
+                  <p class="mr-row__error">{{ getCancelError(reg.id) }}</p>
+                }
+              </div>
+
+              <div class="mr-row__actions">
+                <a [routerLink]="['/events', reg.eventId]" class="btn btn--secondary btn--sm">
+                  View Event
+                </a>
+                @if (reg.status === 'Registered') {
+                  <button class="btn btn--danger btn--sm"
+                          type="button"
+                          [disabled]="isCancelling(reg.id)"
+                          (click)="cancelRegistration(reg)">
+                    {{ isCancelling(reg.id) ? 'Cancelling…' : 'Cancel' }}
+                  </button>
+                }
+              </div>
+
+            </div>
+          }
+        </div>
+      }
+    }
+
+  </div>
 </div>

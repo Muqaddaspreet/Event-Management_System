@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { EventService } from '../services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RegistrationService } from '../../registrations/services/registration.service';
 import { EventDetail } from '../models/event-detail.model';
 
 const GRADIENTS: Record<string, string> = {
@@ -33,14 +35,20 @@ function categoryGradient(name: string): string {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventDetailComponent implements OnInit {
-  private route        = inject(ActivatedRoute);
-  private eventService = inject(EventService);
-  private auth         = inject(AuthService);
+  private route               = inject(ActivatedRoute);
+  private eventService        = inject(EventService);
+  private auth                = inject(AuthService);
+  private registrationService = inject(RegistrationService);
+  private router              = inject(Router);
 
   event    = signal<EventDetail | null>(null);
   loading  = signal(true);
   notFound = signal(false);
   error    = signal(false);
+
+  registering     = signal(false);
+  registerSuccess = signal(false);
+  registerError   = signal<string | null>(null);
 
   readonly isLoggedIn  = this.auth.isLoggedIn;
   readonly currentRole = this.auth.currentRole;
@@ -58,8 +66,8 @@ export class EventDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const idParam   = this.route.snapshot.paramMap.get('id');
-    this.eventId    = idParam ? Number(idParam) : NaN;
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.eventId  = idParam ? Number(idParam) : NaN;
 
     if (isNaN(this.eventId)) {
       this.notFound.set(true);
@@ -78,12 +86,38 @@ export class EventDetailComponent implements OnInit {
 
     this.eventService.getById(this.eventId).subscribe({
       next: ev => { this.event.set(ev); this.loading.set(false); },
-      error: err => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err?.status === 404) {
           this.notFound.set(true);
         } else {
           this.error.set(true);
+        }
+      }
+    });
+  }
+
+  registerForEvent(): void {
+    if (this.registering()) return;
+    this.registering.set(true);
+    this.registerError.set(null);
+
+    this.registrationService.register({ eventId: this.eventId }).subscribe({
+      next: () => {
+        this.registering.set(false);
+        this.registerSuccess.set(true);
+        setTimeout(() => this.router.navigate(['/my-registrations']), 2000);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.registering.set(false);
+        if (err.status === 409) {
+          this.registerError.set('You are already registered for this event.');
+        } else if (err.status === 422) {
+          this.registerError.set(
+            err.error?.message ?? 'This event is not available for registration.'
+          );
+        } else {
+          this.registerError.set('Registration failed. Please try again.');
         }
       }
     });
