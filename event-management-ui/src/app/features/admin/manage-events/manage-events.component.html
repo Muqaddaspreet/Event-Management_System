@@ -1,4 +1,206 @@
-<div>
-  <h2>Manage Events</h2>
-  <p>Admin event management — placeholder</p>
+<div class="ae-page">
+  <div class="ae-container">
+
+    <!-- Header -->
+    <div class="ae-header">
+      <div>
+        <h1 class="ae-title">Manage Events</h1>
+        <p class="ae-subtitle">Review, approve, and reject event submissions</p>
+      </div>
+      <a routerLink="/admin" class="btn btn--secondary">← Dashboard</a>
+    </div>
+
+    <!-- Toolbar: tabs + search -->
+    <div class="ae-toolbar">
+      <div class="ae-tabs">
+        @for (tab of tabs; track tab) {
+          <button class="ae-tab"
+                  [class.ae-tab--active]="activeTab() === tab"
+                  type="button"
+                  (click)="setTab(tab)">
+            {{ tabLabels[tab] }}
+          </button>
+        }
+      </div>
+      <input class="ae-search form-control"
+             type="search"
+             placeholder="Search events, organizers…"
+             [value]="searchQuery()"
+             (input)="onSearch($event)">
+    </div>
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <div class="ae-card card">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="ae-skeleton-row">
+            <div class="ae-skeleton-block" style="flex:2;height:16px"></div>
+            <div class="ae-skeleton-block" style="flex:1.2;height:14px"></div>
+            <div class="ae-skeleton-block" style="flex:1;height:14px"></div>
+            <div class="ae-skeleton-block" style="flex:0.8;height:14px"></div>
+            <div class="ae-skeleton-block" style="width:110px;height:22px;border-radius:999px;flex-shrink:0"></div>
+            <div class="ae-skeleton-block" style="width:150px;height:32px;border-radius:10px;flex-shrink:0"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="ae-state">
+        <div class="ae-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load events. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @else if (filteredEvents().length === 0) {
+      <div class="ae-state">
+        <div class="ae-state__icon">📭</div>
+        <h2>No Events Found</h2>
+        <p>
+          @if (searchQuery()) {
+            No events match your search.
+          } @else if (activeTab() !== 'All') {
+            No {{ tabLabels[activeTab()] }} events right now.
+          } @else {
+            No events have been created yet.
+          }
+        </p>
+        @if (searchQuery()) {
+          <button class="btn btn--secondary" type="button" (click)="clearSearch()">Clear search</button>
+        }
+      </div>
+    }
+
+    <!-- Events table -->
+    @else {
+      <div class="ae-card card">
+
+        <!-- Column headers -->
+        <div class="ae-table-cols ae-table-header">
+          <span>Event</span>
+          <span>Organizer</span>
+          <span>Date</span>
+          <span>Category</span>
+          <span>Status</span>
+          <span class="ae-col-actions">Actions</span>
+        </div>
+
+        @for (event of filteredEvents(); track event.id) {
+
+          <!-- Data row -->
+          <div class="ae-table-cols ae-table-row">
+            <div class="ae-event-cell">
+              <div class="ae-event-thumb"></div>
+              <div class="ae-event-info">
+                <span class="ae-event-title">{{ event.title }}</span>
+                <span class="ae-event-venue">{{ event.venueName }}, {{ event.venueCity }}</span>
+              </div>
+            </div>
+            <span class="ae-cell-text">{{ event.organizerName }}</span>
+            <div class="ae-cell-stack">
+              <span>{{ formatDate(event.startTime) }}</span>
+              <span class="ae-cell-sub">{{ formatTime(event.startTime) }}</span>
+            </div>
+            <span class="ae-cell-text">{{ event.categoryName }}</span>
+            <span class="status-badge {{ statusClass(event.status) }}">
+              {{ statusLabel(event.status) }}
+            </span>
+            <div class="ae-actions">
+              <a [routerLink]="['/events', event.id]"
+                 class="btn btn--secondary btn--sm"
+                 title="View event">
+                View
+              </a>
+              @if (event.status === 'PendingApproval') {
+                <button class="btn btn--success btn--sm"
+                        type="button"
+                        [disabled]="isApproving(event.id) || rejectingId() === event.id"
+                        (click)="approveEvent(event)"
+                        title="Approve event">
+                  {{ isApproving(event.id) ? '…' : 'Approve' }}
+                </button>
+                <button class="btn btn--danger btn--sm"
+                        type="button"
+                        [disabled]="isApproving(event.id) || rejectingId() === event.id"
+                        (click)="openRejectPanel(event.id)"
+                        title="Reject event">
+                  Reject
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Per-row approve error -->
+          @if (getApproveError(event.id)) {
+            <div class="ae-row-error">{{ getApproveError(event.id) }}</div>
+          }
+
+          <!-- Inline reject panel -->
+          @if (rejectingId() === event.id) {
+            <div class="ae-reject-panel">
+              <div class="ae-reject-panel__inner">
+                <p class="ae-reject-panel__label">
+                  Rejecting: <strong>{{ event.title }}</strong>
+                </p>
+                <textarea class="form-control ae-reject-textarea"
+                          placeholder="Reason for rejection (optional)"
+                          rows="3"
+                          [value]="rejectReason()"
+                          (input)="onRejectReasonChange($event)"></textarea>
+                @if (rejectError()) {
+                  <p class="ae-reject-error">{{ rejectError() }}</p>
+                }
+                <div class="ae-reject-panel__footer">
+                  <button class="btn btn--secondary btn--sm"
+                          type="button"
+                          [disabled]="rejectLoading()"
+                          (click)="closeRejectPanel()">
+                    Cancel
+                  </button>
+                  <button class="btn btn--danger btn--sm"
+                          type="button"
+                          [disabled]="rejectLoading()"
+                          (click)="submitReject(event.id)">
+                    {{ rejectLoading() ? 'Rejecting…' : 'Confirm Reject' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (pages().length > 0) {
+        <div class="ae-pagination">
+          <button class="ae-page-btn"
+                  type="button"
+                  [disabled]="currentPage() === 1"
+                  (click)="goToPage(currentPage() - 1)">
+            ‹ Prev
+          </button>
+          @for (page of pages(); track page) {
+            <button class="ae-page-btn"
+                    [class.ae-page-btn--active]="currentPage() === page"
+                    type="button"
+                    (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          }
+          <button class="ae-page-btn"
+                  type="button"
+                  [disabled]="currentPage() === totalPages()"
+                  (click)="goToPage(currentPage() + 1)">
+            Next ›
+          </button>
+        </div>
+      }
+    }
+
+  </div>
 </div>

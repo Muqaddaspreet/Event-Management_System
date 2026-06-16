@@ -1,4 +1,135 @@
-<div>
-  <h2>Admin Dashboard</h2>
-  <p>Admin overview — placeholder</p>
+<div class="ad-page">
+  <div class="ad-container">
+
+    <!-- Header -->
+    <div class="ad-header">
+      <div>
+        <h1 class="ad-title">Admin Dashboard</h1>
+        <p class="ad-subtitle">Review platform activity and event approvals</p>
+      </div>
+      <a routerLink="/admin/events" class="btn btn--primary">Manage Events</a>
+    </div>
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <div class="ad-stats">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="ad-stat-card card">
+            <div class="ad-skeleton-block" style="width:44px;height:44px;border-radius:12px;margin-bottom:16px"></div>
+            <div class="ad-skeleton-block" style="width:50%;height:28px;margin-bottom:8px"></div>
+            <div class="ad-skeleton-block" style="width:70%;height:13px"></div>
+          </div>
+        }
+      </div>
+      <div class="ad-section-header">
+        <div class="ad-skeleton-block" style="height:20px;width:180px"></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        @for (i of [1,2,3]; track i) {
+          <div class="ad-skeleton-row">
+            <div class="ad-skeleton-block" style="flex:2;height:16px"></div>
+            <div class="ad-skeleton-block" style="flex:1;height:14px"></div>
+            <div class="ad-skeleton-block" style="flex:1.2;height:14px"></div>
+            <div class="ad-skeleton-block" style="width:160px;height:32px;border-radius:10px;flex-shrink:0"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="ad-state">
+        <div class="ad-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load the dashboard. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    @else {
+      <!-- Stat cards -->
+      <div class="ad-stats">
+        <div class="ad-stat-card card">
+          <div class="ad-stat-icon ad-stat-icon--users">👥</div>
+          <div class="ad-stat-value">{{ stats()?.totalUsers ?? 0 }}</div>
+          <div class="ad-stat-label">Total Users</div>
+        </div>
+        <div class="ad-stat-card card">
+          <div class="ad-stat-icon ad-stat-icon--events">📅</div>
+          <div class="ad-stat-value">{{ stats()?.totalEvents ?? 0 }}</div>
+          <div class="ad-stat-label">Total Events</div>
+        </div>
+        <div class="ad-stat-card card">
+          <div class="ad-stat-icon ad-stat-icon--pending">⏳</div>
+          <div class="ad-stat-value ad-stat-value--amber">{{ stats()?.pendingEvents ?? 0 }}</div>
+          <div class="ad-stat-label">Pending Approval</div>
+        </div>
+        <div class="ad-stat-card card">
+          <div class="ad-stat-icon ad-stat-icon--published">✅</div>
+          <div class="ad-stat-value ad-stat-value--green">{{ stats()?.publishedEvents ?? 0 }}</div>
+          <div class="ad-stat-label">Published</div>
+        </div>
+        <div class="ad-stat-card card">
+          <div class="ad-stat-icon ad-stat-icon--registrations">🎟️</div>
+          <div class="ad-stat-value ad-stat-value--blue">{{ stats()?.totalRegistrations ?? 0 }}</div>
+          <div class="ad-stat-label">Registrations</div>
+        </div>
+      </div>
+
+      <!-- Pending Approvals section -->
+      <div class="ad-section-header">
+        <h2 class="ad-section-title">Pending Approvals</h2>
+        <a routerLink="/admin/events" class="ad-view-all">View all events →</a>
+      </div>
+
+      @if (pendingEvents().length === 0) {
+        <div class="ad-empty card">
+          <div class="ad-empty__icon">🎉</div>
+          <h3>All caught up!</h3>
+          <p>No events are pending approval right now.</p>
+        </div>
+      } @else {
+        <div class="ad-pending-card card">
+
+          <!-- Header row -->
+          <div class="ad-pending-cols ad-pending-header">
+            <span>Event</span>
+            <span>Date</span>
+            <span>Organizer</span>
+            <span>Actions</span>
+          </div>
+
+          @for (event of pendingEvents(); track event.id) {
+            <div class="ad-pending-cols ad-pending-row">
+              <div class="ad-event-cell">
+                <div class="ad-event-thumb"></div>
+                <span class="ad-event-title">{{ event.title }}</span>
+              </div>
+              <span class="ad-cell-text">{{ formatDate(event.startTime) }}</span>
+              <span class="ad-cell-text">{{ event.organizerName }}</span>
+              <div class="ad-row-actions">
+                <button class="btn btn--success btn--sm"
+                        type="button"
+                        [disabled]="isApproving(event.id) || isRejecting(event.id)"
+                        (click)="approveEvent(event)">
+                  {{ isApproving(event.id) ? '…' : 'Approve' }}
+                </button>
+                <button class="btn btn--danger btn--sm"
+                        type="button"
+                        [disabled]="isApproving(event.id) || isRejecting(event.id)"
+                        (click)="rejectEvent(event)">
+                  {{ isRejecting(event.id) ? '…' : 'Reject' }}
+                </button>
+              </div>
+            </div>
+
+            @if (getError(event.id)) {
+              <div class="ad-row-error">{{ getError(event.id) }}</div>
+            }
+          }
+        </div>
+      }
+    }
+
+  </div>
 </div>
