@@ -34,6 +34,12 @@
   margin: 0;
 }
 
+.ad-header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 /* ── Stat cards ───────────────────────────────────────────────────────────── */
 .ad-stats {
   display: grid;
@@ -259,6 +265,7 @@
 @media (max-width: 640px) {
   .ad-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .ad-header { flex-direction: column; align-items: stretch; }
+  .ad-header-actions { flex-direction: column; }
   .ad-header .btn { width: 100%; justify-content: center; }
 
   .ad-pending-cols {

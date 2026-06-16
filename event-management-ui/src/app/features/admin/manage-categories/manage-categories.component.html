@@ -1,4 +1,108 @@
-<div>
-  <h2>Manage Categories</h2>
-  <p>Admin category management — placeholder</p>
+<div class="mc-page">
+  <div class="mc-container">
+
+    <!-- Header -->
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Manage Categories</h1>
+        <p class="mc-subtitle">Create and organize event categories</p>
+      </div>
+      <div class="mc-header-actions">
+        <a routerLink="/admin" class="btn btn--secondary">← Dashboard</a>
+        <button class="btn btn--primary" type="button" (click)="openCreateForm()">+ Create Category</button>
+      </div>
+    </div>
+
+    <!-- Create / edit form panel -->
+    @if (formOpen()) {
+      <div class="mc-form-panel card">
+        <h2 class="mc-form-panel__title">{{ editingId() === null ? 'New Category' : 'Edit Category' }}</h2>
+        <div class="form-group">
+          <label class="form-label">Name<span class="form-required">*</span></label>
+          <input class="form-control"
+                 type="text"
+                 placeholder="e.g. Music, Technology, Sports"
+                 [value]="formName()"
+                 (input)="onNameChange($event)">
+        </div>
+        @if (formError()) {
+          <p class="form-error mc-form-panel__error">{{ formError() }}</p>
+        }
+        <div class="mc-form-panel__footer">
+          <button class="btn btn--secondary" type="button" [disabled]="saving()" (click)="closeForm()">Cancel</button>
+          <button class="btn btn--primary" type="button" [disabled]="saving()" (click)="submitForm()">
+            {{ saving() ? 'Saving…' : 'Save' }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <div class="mc-card card">
+        @for (i of [1,2,3]; track i) {
+          <div class="mc-skeleton-row">
+            <div class="mc-skeleton-block" style="flex:1;height:16px"></div>
+            <div class="mc-skeleton-block" style="width:140px;height:32px;border-radius:10px;flex-shrink:0"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="mc-state">
+        <div class="mc-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load categories. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @else if (categories().length === 0) {
+      <div class="mc-state">
+        <div class="mc-state__icon">🏷️</div>
+        <h2>No categories yet</h2>
+        <p>Create your first category to start organizing events.</p>
+        <button class="btn btn--primary" type="button" (click)="openCreateForm()">+ Create Category</button>
+      </div>
+    }
+
+    <!-- Categories list -->
+    @else {
+      <div class="mc-card card">
+
+        <div class="mc-table-cols mc-table-header">
+          <span>Name</span>
+          <span class="mc-col-actions">Actions</span>
+        </div>
+
+        @for (category of categories(); track category.id) {
+          <div class="mc-table-cols mc-table-row">
+            <span class="mc-cell-name">{{ category.name }}</span>
+            <div class="mc-actions">
+              <button class="btn btn--secondary btn--sm"
+                      type="button"
+                      [disabled]="isDeleting(category.id)"
+                      (click)="openEditForm(category)">
+                Edit
+              </button>
+              <button class="btn btn--danger btn--sm"
+                      type="button"
+                      [disabled]="isDeleting(category.id)"
+                      (click)="deleteCategory(category)">
+                {{ isDeleting(category.id) ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+
+          @if (getDeleteError(category.id)) {
+            <div class="mc-row-error">{{ getDeleteError(category.id) }}</div>
+          }
+        }
+      </div>
+    }
+
+  </div>
 </div>

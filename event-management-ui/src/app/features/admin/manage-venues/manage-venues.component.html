@@ -1,4 +1,148 @@
-<div>
-  <h2>Manage Venues</h2>
-  <p>Admin venue management — placeholder</p>
+<div class="mv-page">
+  <div class="mv-container">
+
+    <!-- Header -->
+    <div class="mv-header">
+      <div>
+        <h1 class="mv-title">Manage Venues</h1>
+        <p class="mv-subtitle">Manage event locations and venue capacity</p>
+      </div>
+      <div class="mv-header-actions">
+        <a routerLink="/admin" class="btn btn--secondary">← Dashboard</a>
+        <button class="btn btn--primary" type="button" (click)="openCreateForm()">+ Create Venue</button>
+      </div>
+    </div>
+
+    <!-- Create / edit form panel -->
+    @if (formOpen()) {
+      <div class="mv-form-panel card">
+        <h2 class="mv-form-panel__title">{{ editingId() === null ? 'New Venue' : 'Edit Venue' }}</h2>
+
+        <div class="form-group">
+          <label class="form-label">Name<span class="form-required">*</span></label>
+          <input class="form-control"
+                 type="text"
+                 placeholder="e.g. Grand Convention Center"
+                 [value]="formName()"
+                 (input)="onNameChange($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Address<span class="form-required">*</span></label>
+          <input class="form-control"
+                 type="text"
+                 placeholder="Street address"
+                 [value]="formAddress()"
+                 (input)="onAddressChange($event)">
+        </div>
+
+        <div class="mv-form-row">
+          <div class="form-group">
+            <label class="form-label">City<span class="form-required">*</span></label>
+            <input class="form-control"
+                   type="text"
+                   placeholder="City"
+                   [value]="formCity()"
+                   (input)="onCityChange($event)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Capacity<span class="form-required">*</span></label>
+            <input class="form-control"
+                   type="number"
+                   min="1"
+                   placeholder="e.g. 500"
+                   [value]="formCapacity()"
+                   (input)="onCapacityChange($event)">
+          </div>
+        </div>
+
+        @if (formError()) {
+          <p class="form-error mv-form-panel__error">{{ formError() }}</p>
+        }
+        <div class="mv-form-panel__footer">
+          <button class="btn btn--secondary" type="button" [disabled]="saving()" (click)="closeForm()">Cancel</button>
+          <button class="btn btn--primary" type="button" [disabled]="saving()" (click)="submitForm()">
+            {{ saving() ? 'Saving…' : 'Save' }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <div class="mv-card card">
+        @for (i of [1,2,3]; track i) {
+          <div class="mv-skeleton-row">
+            <div class="mv-skeleton-block" style="flex:1.4;height:16px"></div>
+            <div class="mv-skeleton-block" style="flex:1.6;height:14px"></div>
+            <div class="mv-skeleton-block" style="flex:0.8;height:14px"></div>
+            <div class="mv-skeleton-block" style="flex:0.6;height:14px"></div>
+            <div class="mv-skeleton-block" style="width:140px;height:32px;border-radius:10px;flex-shrink:0"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="mv-state">
+        <div class="mv-state__icon">⚠️</div>
+        <h2>Something Went Wrong</h2>
+        <p>We couldn't load venues. Please try again.</p>
+        <button class="btn btn--primary" type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @else if (venues().length === 0) {
+      <div class="mv-state">
+        <div class="mv-state__icon">📍</div>
+        <h2>No venues yet</h2>
+        <p>Create your first venue to start scheduling events.</p>
+        <button class="btn btn--primary" type="button" (click)="openCreateForm()">+ Create Venue</button>
+      </div>
+    }
+
+    <!-- Venues list -->
+    @else {
+      <div class="mv-card card">
+
+        <div class="mv-table-cols mv-table-header">
+          <span>Name</span>
+          <span>Address</span>
+          <span>City</span>
+          <span>Capacity</span>
+          <span class="mv-col-actions">Actions</span>
+        </div>
+
+        @for (venue of venues(); track venue.id) {
+          <div class="mv-table-cols mv-table-row">
+            <span class="mv-cell-name">{{ venue.name }}</span>
+            <span class="mv-cell-text">{{ venue.address }}</span>
+            <span class="mv-cell-text">{{ venue.city }}</span>
+            <span class="mv-cell-text">{{ venue.capacity }}</span>
+            <div class="mv-actions">
+              <button class="btn btn--secondary btn--sm"
+                      type="button"
+                      [disabled]="isDeleting(venue.id)"
+                      (click)="openEditForm(venue)">
+                Edit
+              </button>
+              <button class="btn btn--danger btn--sm"
+                      type="button"
+                      [disabled]="isDeleting(venue.id)"
+                      (click)="deleteVenue(venue)">
+                {{ isDeleting(venue.id) ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+
+          @if (getDeleteError(venue.id)) {
+            <div class="mv-row-error">{{ getDeleteError(venue.id) }}</div>
+          }
+        }
+      </div>
+    }
+
+  </div>
 </div>
